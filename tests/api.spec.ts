@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { applyAll, applyReasoning, applyRow, displayName, listReasoning, listRows, splitVendorName, type LlmPiAiSection } from '../src/api.ts'
+import { applyAll, applyRow, displayName, listRows, splitVendorName, type LlmPiAiSection } from '../src/api.ts'
 
 const meta = {
   known: { id: 'known-model', name: 'Known Model', vendor: 'TestVendor', contextWindow: 100, maxTokens: 50, input: ['text', 'image'] as const },
@@ -159,103 +159,5 @@ describe('applyAll', () => {
     const result = applyAll(section, lookup, new Set(['other']))
     assert.equal(result.patch, undefined)
     assert.equal(result.filled.length, 0)
-  })
-})
-
-describe('reasoning declaration', () => {
-  const rSection: LlmPiAiSection = {
-    providers: {
-      gw: {
-        api: 'openai-completions', baseURL: 'https://gw.example/v1',
-        compat: { thinkingFormat: 'openai' },
-        models: [
-          { id: 'reason-model', reasoningEfforts: { off: null, high: 'high' } },
-          { id: 'plain-model' },
-        ],
-        modelOverrides: { 'override-model': { reasoningEfforts: false } },
-      },
-    },
-  }
-  const rLookup = (id: string) => {
-    if (id === 'reason-model') return { id, contextWindow: 100, reasoning: true, reasoningLevels: ['low', 'high'] }
-    if (id === 'plain-model') return { id, contextWindow: 50, reasoning: true }
-    return undefined
-  }
-
-  it('listReasoning reports protocol, declared efforts, and presets', () => {
-    const views = listReasoning(rSection, rLookup, new Set(['gw']))
-    assert.equal(views.length, 1)
-    const gw = views[0]!
-    assert.equal(gw.api, 'openai-completions')
-    assert.equal(gw.thinkingFormat, 'openai')
-    assert.equal(gw.models.length, 3)
-    const reason = gw.models.find((m) => m.id === 'reason-model')!
-    assert.deepEqual(reason.declared, { off: null, high: 'high' })
-    assert.deepEqual(reason.preset, ['off', 'low', 'high'])
-    assert.equal(reason.isList, true)
-    const plain = gw.models.find((m) => m.id === 'plain-model')!
-    assert.equal(plain.declared, undefined)
-    assert.deepEqual(plain.preset, ['off', 'high'])
-    const override = gw.models.find((m) => m.id === 'override-model')!
-    assert.equal(override.declared, false)
-    assert.equal(override.isList, false)
-  })
-
-  it('skips providers outside the user layer', () => {
-    assert.deepEqual(listReasoning(rSection, rLookup, new Set(['other'])), [])
-  })
-
-  it('writes the route-level thinkingFormat on an openai-completions route', () => {
-    const result = applyReasoning(rSection, new Set(['gw']), 'gw', undefined, 'deepseek')
-    assert.equal(result.ok, true)
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    assert.deepEqual(gw.compat, { thinkingFormat: 'deepseek' })
-    // the rest of the profile rides along (array-replace safety)
-    assert.equal((gw.models as unknown[]).length, 2)
-  })
-
-  it('pre-emptively rejects thinkingFormat on non-completions protocols', () => {
-    const responses: LlmPiAiSection = {
-      providers: { gw: { api: 'openai-responses', baseURL: 'https://gw.example/v1', models: [{ id: 'm' }] } },
-    }
-    const result = applyReasoning(responses, new Set(['gw']), 'gw', undefined, 'openai')
-    assert.equal(result.ok, false)
-    assert.ok((result.reason ?? '').includes('openai-completions'))
-    assert.ok((result.reason ?? '').includes('openai-responses'))
-    // per-model efforts are still accepted — that is the native path
-    const efforts = applyReasoning(responses, new Set(['gw']), 'gw', 'm', { off: null, high: 'high' })
-    assert.equal(efforts.ok, true)
-    // a route without an api is rejected too (unprovable protocol)
-    const noApi: LlmPiAiSection = { providers: { gw: { models: [{ id: 'm' }] } } }
-    assert.equal(applyReasoning(noApi, new Set(['gw']), 'gw', undefined, 'openai').ok, false)
-  })
-
-  it('writes a list model reasoningEfforts declaration', () => {
-    const result = applyReasoning(rSection, new Set(['gw']), 'gw', 'reason-model', { off: null, low: 'low', high: 'high' })
-    assert.equal(result.ok, true)
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const models = gw.models as Array<Record<string, unknown>>
-    assert.deepEqual(models[0]!.reasoningEfforts, { off: null, low: 'low', high: 'high' })
-    assert.equal(models[1]!.id, 'plain-model')
-  })
-
-  it('writes an override reasoningEfforts declaration', () => {
-    const result = applyReasoning(rSection, new Set(['gw']), 'gw', 'override-model', false)
-    assert.equal(result.ok, true)
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const overrides = gw.modelOverrides as Record<string, Record<string, unknown>>
-    assert.equal(overrides['override-model']!.reasoningEfforts, false)
-  })
-
-  it('rejects bad declarations and non-user providers', () => {
-    assert.ok((applyReasoning(rSection, new Set(['gw']), 'gw', 'reason-model', {}).reason ?? '').includes('字典'))
-    assert.ok((applyReasoning(rSection, new Set(['gw']), 'gw', 'reason-model', { turbo: 'x' }).reason ?? '').includes('turbo'))
-    assert.ok((applyReasoning(rSection, new Set(['gw']), 'gw', 'reason-model', { high: '' }).reason ?? '').includes('high'))
-    assert.equal(applyReasoning(rSection, new Set(['other']), 'gw', 'reason-model', { high: 'high' }).reason, 'provider-not-configured')
-    assert.equal(applyReasoning(rSection, new Set(['gw', 'ghost']), 'ghost', 'reason-model', { high: 'high' }).reason, 'provider-not-found')
-    assert.equal(applyReasoning(rSection, new Set(['gw']), 'gw', 'nope', { high: 'high' }).reason, 'model-not-found')
   })
 })

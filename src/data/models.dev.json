@@ -1,8 +1,8 @@
 {
   "source": "models.dev",
   "url": "https://models.dev/api.json",
-  "fetchedAt": "2026-08-15T11:33:08.155Z",
-  "modelCount": 2079,
+  "fetchedAt": "2026-08-15T12:35:20.078Z",
+  "modelCount": 2078,
   "models": [
     {
       "id": "deepseek-v4-flash",
@@ -13,12 +13,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-v4-pro",
@@ -29,11 +24,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2.7-code",
@@ -68,12 +59,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.5",
@@ -85,14 +71,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2",
@@ -103,11 +82,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.1",
@@ -140,15 +115,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.6-luna",
@@ -160,15 +127,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.6-terra",
@@ -180,15 +139,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.4",
@@ -200,14 +151,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.5-35b-a3b",
@@ -530,12 +474,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.0-pro-image-preview",
@@ -1094,13 +1033,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.2",
@@ -1112,14 +1045,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "stepfun-ai/gelab-zero-4b-preview",
@@ -1157,12 +1083,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "MiniMax-M2.5-highspeed",
@@ -1214,12 +1135,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "moonshotai/kimi-k3-fast",
@@ -1230,12 +1146,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org/GLM-5.2-Fast",
@@ -1245,12 +1156,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-flex",
@@ -1260,16 +1166,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-short",
@@ -1279,16 +1176,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemma-4-31b",
@@ -1380,16 +1268,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2.6",
@@ -1434,11 +1313,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "umans-deepseek-v4-flash-0731",
@@ -1448,12 +1323,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "umans-kimi-k3",
@@ -1464,12 +1334,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "umans-glm-5.1",
@@ -1491,12 +1356,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "umans-coder",
@@ -1518,12 +1378,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "umans-kimi-k2.7",
@@ -1544,12 +1399,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "@cf/aisingapore/gemma-sea-lion-v4-27b-it",
@@ -1598,12 +1448,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "@cf/meta/llama-guard-3-8b",
@@ -1622,12 +1467,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "@cf/meta/llama-4-scout-17b-16e-instruct",
@@ -1667,11 +1507,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-v4-flash-0731",
@@ -1682,11 +1518,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "@cf/qwen/qwen3-30b-a3b-fp8",
@@ -1754,12 +1586,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.5-plus",
@@ -1903,16 +1730,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-chat",
@@ -1945,13 +1763,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.1-pro-preview",
@@ -1963,12 +1775,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.1-pro-preview-customtools",
@@ -1980,12 +1787,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-flash-latest",
@@ -1997,13 +1799,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/gemini-3-pro-preview",
@@ -2014,12 +1810,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.1-flash-lite-preview",
@@ -2031,13 +1822,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-flash-preview",
@@ -2049,13 +1834,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.1",
@@ -2077,12 +1856,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-haiku-4.5",
@@ -2126,12 +1900,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4",
@@ -2165,13 +1934,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4o",
@@ -2205,13 +1968,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4o-mini",
@@ -2244,12 +2001,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4-turbo",
@@ -2293,12 +2045,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.1-codex-mini",
@@ -2332,13 +2079,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.3-codex",
@@ -2350,14 +2091,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4.1-nano",
@@ -2380,14 +2114,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4o-2024-05-13",
@@ -2410,10 +2137,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.2-codex",
@@ -2469,10 +2193,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.2-pro",
@@ -2484,12 +2205,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.1-chat-latest",
@@ -2545,14 +2261,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.1",
@@ -2564,13 +2273,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.6-plus",
@@ -3115,15 +2818,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "llama-3.1-8b-instruct",
@@ -3219,15 +2914,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "baai/bge-m3",
@@ -3266,12 +2953,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/Mistral-7B-Instruct-v0.3",
@@ -3281,12 +2963,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/mistral-large-3-675b-instruct-2512",
@@ -3325,11 +3002,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/mixtral-8x22b-instruct",
@@ -3547,12 +3220,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nova-pro-v1",
@@ -3574,12 +3242,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3guard-gen-8b",
@@ -3609,12 +3272,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3guard-gen-0.6b",
@@ -3658,13 +3316,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "voxtral-small-2507",
@@ -3713,14 +3365,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "amazon/nova-2-lite",
@@ -3731,12 +3376,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nova-micro-v1",
@@ -3798,11 +3438,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nousresearch/hermes-4-70b",
@@ -3824,13 +3460,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5-turbo",
@@ -3853,13 +3483,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemma-3-27b-it",
@@ -3923,12 +3547,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.6-flash",
@@ -3940,13 +3559,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/ministral-3b-2512",
@@ -3966,12 +3579,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-oss-safeguard-120b",
@@ -3981,12 +3589,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus4-7",
@@ -3997,12 +3600,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nova-lite-v1",
@@ -4083,11 +3681,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral-7b-instruct-v0.2",
@@ -4107,14 +3701,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "pixtral-large-2502",
@@ -4164,12 +3751,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen/qwen3.8-2.4t-a95b",
@@ -4179,12 +3761,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-exp-1206",
@@ -4205,14 +3782,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-2.5-flash-lite-preview-06-17",
@@ -4223,12 +3793,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4-20250514",
@@ -4250,12 +3815,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "auto-model",
@@ -4428,12 +3988,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-4-airx",
@@ -4452,12 +4007,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "brave-pro",
@@ -4477,12 +4027,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-2.5-flash-lite-preview-09-2025",
@@ -4493,12 +4038,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "azure-o3-mini",
@@ -4567,12 +4107,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.8-max:thinking",
@@ -4583,13 +4118,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "learnlm-1.5-pro-experimental",
@@ -4765,12 +4294,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "jamba-mini",
@@ -4799,12 +4323,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-4.1v-thinking-flash",
@@ -5018,14 +4537,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.6-max-preview",
@@ -5069,12 +4581,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-2.5-pro-preview-06-05",
@@ -5085,12 +4592,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-5-20250929",
@@ -5112,12 +4614,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "azure-gpt-4-turbo",
@@ -5166,11 +4663,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-1-thinking:32000",
@@ -5233,11 +4726,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Qwen3.5-27B-Queen-Derestricted",
@@ -5334,11 +4823,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-chat-cheaper",
@@ -5426,12 +4911,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "doubao-seed-2-0-mini-260215",
@@ -5451,12 +4931,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "holo3-35b-a3b",
@@ -5500,12 +4975,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "hermes-medium",
@@ -5535,11 +5005,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-1-thinking:8192",
@@ -5601,12 +5067,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "step-2-16k-exp",
@@ -5738,12 +5199,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-thinking:8192",
@@ -5934,12 +5390,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "GLM-4.6-Derestricted-v5",
@@ -6028,12 +5479,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Gemma-4-31B-DarkIdol",
@@ -6092,12 +5538,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Doctor-Shotgun/MS3.2-24B-Magnum-Diamond",
@@ -6232,11 +5673,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/nemotron-3.5-lightning:thinking",
@@ -6246,11 +5683,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "aion-labs/aion-3.0",
@@ -6329,12 +5762,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "z-ai/glm-4.5v:thinking",
@@ -6366,12 +5794,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-pro:thinking",
@@ -6381,12 +5804,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-pro-cheaper:thinking",
@@ -6396,12 +5814,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-flash-0731-cheaper",
@@ -6411,13 +5824,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v3.2:thinking",
@@ -6437,13 +5844,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-pro-cheaper",
@@ -6453,12 +5854,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-prover-v2-671b",
@@ -6477,13 +5873,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-flash-0731:thinking",
@@ -6493,13 +5883,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-flash-latest",
@@ -6509,13 +5893,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-pro-0813:thinking",
@@ -6525,13 +5903,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "arcee-ai/trinity-large-thinking",
@@ -6574,13 +5946,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/gemini-3-flash-preview-thinking",
@@ -6591,13 +5957,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/gemini-pro-latest",
@@ -6608,12 +5968,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/gemma-4-31b-it:thinking",
@@ -6647,14 +6002,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "muse-spark-1.1",
@@ -6666,14 +6014,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "muse-spark-1.2-contributor",
@@ -6685,14 +6026,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "soob3123/Veiled-Calla-12B",
@@ -6760,12 +6094,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "grok-4.6",
@@ -6777,13 +6106,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "grok-4.5",
@@ -6795,12 +6118,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "x-ai/grok-latest",
@@ -6811,13 +6129,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "x-ai/grok-4.20-multi-agent",
@@ -6828,13 +6140,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "grok-build-0.1",
@@ -6868,13 +6174,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "bytedance-seed/seed-2.0-lite",
@@ -6885,13 +6185,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "bytedance-seed/seed-2-1-turbo",
@@ -6913,12 +6207,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "moonshotai/kimi-k2-instruct",
@@ -7080,14 +6369,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.6:thinking",
@@ -7098,14 +6380,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.8:thinking",
@@ -7116,14 +6391,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.6:thinking:low",
@@ -7145,14 +6413,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-haiku-latest",
@@ -7174,14 +6435,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.6:thinking:max",
@@ -7203,14 +6457,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-sonnet-4.6:thinking",
@@ -7221,14 +6468,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-fable-latest",
@@ -7239,14 +6479,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-fable-5",
@@ -7258,14 +6491,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-sonnet-5:thinking",
@@ -7276,14 +6502,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.6:thinking:medium",
@@ -7371,11 +6590,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "volcengine/doubao-seed-2.1-turbo",
@@ -7452,12 +6667,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "o1-pro",
@@ -7468,12 +6678,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-4-turbo-preview",
@@ -7492,10 +6697,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/o4-mini-high",
@@ -7505,12 +6707,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.6-luna-pro",
@@ -7521,15 +6718,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "o1",
@@ -7540,12 +6729,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "o3",
@@ -7556,12 +6740,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-chat-latest",
@@ -7572,15 +6751,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/o4-mini-deep-research",
@@ -7590,10 +6761,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-4o-search-preview",
@@ -7613,12 +6781,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.1-2025-11-13",
@@ -7628,13 +6791,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-latest",
@@ -7645,15 +6802,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/o3-pro-2025-06-10",
@@ -7663,12 +6812,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.6-terra-pro",
@@ -7679,15 +6823,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "o4-mini",
@@ -7698,12 +6834,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "o3-mini",
@@ -7713,12 +6844,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.6-sol-pro",
@@ -7729,15 +6855,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-4o-mini-search-preview",
@@ -7756,12 +6874,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-oss-safeguard-20b",
@@ -7771,12 +6884,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Tongyi-Zhiwen/QwenLong-L1-32B",
@@ -7858,12 +6966,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "MarinaraSpaghetti/NemoMix-Unleashed-12B",
@@ -7937,13 +7040,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Sao10K/L3.3-70B-Euryale-v2.3",
@@ -7998,15 +7095,6 @@
       "input": [
         "text",
         "image"
-      ]
-    },
-    {
-      "id": "qwen/Qwen3-235B-A22B-Instruct-2507-TEE",
-      "name": "Qwen 3 235b A22B 2507 (TEE)",
-      "contextWindow": 256000,
-      "maxTokens": 262144,
-      "input": [
-        "text"
       ]
     },
     {
@@ -8101,14 +7189,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "inflatebot/MN-12B-Mag-Mell-R1",
@@ -8128,11 +7209,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xiaomi/mimo-v2.5",
@@ -8143,11 +7220,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xiaomi/mimo-v2.5-pro-crof",
@@ -8157,13 +7230,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xiaomi/mimo-v2.5-pro-crof:thinking",
@@ -8173,13 +7240,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xiaomi/mimo-v2.5-pro",
@@ -8189,11 +7250,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xiaomi/mimo-v2.5-pro:thinking",
@@ -8203,11 +7260,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "alibaba/qwen3.6-27b:thinking",
@@ -8250,12 +7303,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "sakana/fugu-ultra-v1.1",
@@ -8266,12 +7314,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "Envoid/Llama-3.05-NT-Storybreaker-Ministral-70B",
@@ -8374,11 +7417,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org/glm-4.6v-original",
@@ -8447,11 +7486,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org/glm-4.7-flash-original:thinking",
@@ -8523,11 +7558,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org/glm-4.7-original",
@@ -8567,14 +7598,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "thinkingmachines/inkling:thinking",
@@ -8585,14 +7609,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "thinkingmachines/Inkling-Small",
@@ -8669,15 +7686,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "inclusionai/ling-2.6-flash",
@@ -8697,11 +7706,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "meta-llama/llama-4-maverick",
@@ -8759,11 +7764,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/mistral-medium-3",
@@ -8868,15 +7869,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "nex-agi/nex-n2-pro",
@@ -8887,15 +7880,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "upstage/solar-pro-3",
@@ -8915,13 +7900,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "upstage/solar-pro4",
@@ -9037,11 +8016,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "TEE/gemma4-31b:thinking",
@@ -9133,12 +8108,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "abliterated-model-large",
@@ -9148,12 +8118,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "abliterated-model",
@@ -9164,16 +8129,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "green-r-raw",
@@ -9184,12 +8140,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-ponytail-lite",
@@ -9199,14 +8150,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-ponytail-ultra",
@@ -9216,14 +8160,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "holo2-30b-a3b",
@@ -9234,12 +8171,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "green-s",
@@ -9267,14 +8199,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-caveman-lite",
@@ -9284,14 +8209,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "green-s-pro",
@@ -9310,12 +8228,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-caveman",
@@ -9325,14 +8238,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemma4",
@@ -9342,14 +8248,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "voxtral-small-24b-2507",
@@ -9368,14 +8267,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "green-l",
@@ -9395,14 +8287,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-honey-ultra",
@@ -9412,14 +8297,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2-honey",
@@ -9429,14 +8307,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-8",
@@ -9448,14 +8319,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.6",
@@ -9467,15 +8331,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "xpersona-gpt-5.5",
@@ -9486,14 +8342,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-6",
@@ -9505,13 +8354,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "xpersona-frieren-coder",
@@ -9522,14 +8365,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "hy3-preview",
@@ -9539,12 +8375,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "step-router-v1",
@@ -9609,12 +8440,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "text-prime",
@@ -9624,12 +8450,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "text-standard",
@@ -9639,12 +8460,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "agent-prime",
@@ -9654,12 +8470,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "agent-max",
@@ -9670,14 +8481,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "code-standard",
@@ -9687,12 +8491,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "text-max",
@@ -9703,14 +8502,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "code-max",
@@ -9721,14 +8513,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "agent-standard",
@@ -9738,12 +8523,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-5@20250929",
@@ -9765,14 +8545,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-pro-image",
@@ -9784,11 +8557,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-6@default",
@@ -9799,13 +8568,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-2.5-flash-tts",
@@ -9825,14 +8588,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-5@default",
@@ -9843,14 +8599,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-6@default",
@@ -9861,13 +8610,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-5@default",
@@ -9878,14 +8621,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-embedding-001",
@@ -9938,11 +8674,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4@20250514",
@@ -9964,12 +8696,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-1@20250805",
@@ -10019,12 +8746,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-oss-120b-maas",
@@ -10034,12 +8756,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-ai/deepseek-v3.2-maas",
@@ -10100,12 +8817,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "wan2.7-image",
@@ -10160,11 +8872,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deep-research-preview-04-2026",
@@ -10309,11 +9017,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "lyria-3-pro-preview",
@@ -10348,13 +9052,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "ByteDance/Seed-2.0-pro",
@@ -10434,14 +9132,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-5",
@@ -10453,12 +9144,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-5",
@@ -10482,13 +9168,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "grok-4.20-0309-non-reasoning",
@@ -10623,11 +9303,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/nemotron-nano-12b-v2-vl:free",
@@ -10680,11 +9356,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/nemotron-3-nano-30b-a3b:free",
@@ -10715,14 +9387,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "microsoft/phi-4",
@@ -10921,14 +9586,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-4.8-fast",
@@ -10939,14 +9597,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic/claude-opus-5-fast",
@@ -10957,14 +9608,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "cohere/command-a",
@@ -11049,12 +9693,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-4o-mini-2024-07-18",
@@ -11074,12 +9713,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5-image-mini",
@@ -11101,14 +9735,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-audio-mini",
@@ -11277,12 +9904,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen/qwen3-vl-30b-a3b-instruct",
@@ -11333,11 +9955,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "perplexity/sonar-pro-search",
@@ -11416,11 +10034,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/mistral-small-3.2-24b-instruct",
@@ -11551,12 +10165,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "Qwen/Qwen3.6-35B-A3B-FP8",
@@ -11645,11 +10254,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral-small-4-119b",
@@ -11793,15 +10398,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-6-terra",
@@ -11812,15 +10409,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-2-5-flash-lite",
@@ -11852,11 +10441,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-1-flash-lite",
@@ -11867,13 +10452,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2-7-code",
@@ -11895,14 +10474,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2-7-code:free",
@@ -11934,11 +10506,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5-1",
@@ -11981,15 +10549,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-image-2",
@@ -12010,12 +10570,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mimo-v2-5-pro",
@@ -12058,14 +10613,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2-6:free",
@@ -12117,12 +10665,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-ai/deepseek-ocr/models/DeepSeek-OCR",
@@ -12175,14 +10718,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.6-luna",
@@ -12193,14 +10729,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.2",
@@ -12211,14 +10740,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.6-terra",
@@ -12229,14 +10751,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.1-pro",
@@ -12268,14 +10783,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.5",
@@ -12286,14 +10794,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.4",
@@ -12304,14 +10805,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "snowflake-llama3.3-70b",
@@ -12331,14 +10825,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral-large2",
@@ -12359,14 +10846,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.6-sol",
@@ -12377,14 +10857,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "c4ai-aya-expanse-32b",
@@ -12459,11 +10932,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "c4ai-aya-vision-8b",
@@ -12597,13 +11066,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-6-luna",
@@ -12614,12 +11077,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-2",
@@ -12630,13 +11088,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-kimi-k2-7-code",
@@ -12647,12 +11099,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-glm-5-2",
@@ -12662,12 +11109,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-4-mini",
@@ -12678,12 +11120,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-1",
@@ -12694,13 +11131,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-4",
@@ -12711,12 +11142,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5",
@@ -12727,13 +11153,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-6-terra",
@@ -12744,12 +11164,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-claude-sonnet-4-6",
@@ -12815,13 +11230,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-5",
@@ -12832,12 +11241,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-claude-sonnet-4-5",
@@ -12859,12 +11263,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-claude-opus-4-7",
@@ -12885,12 +11284,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gemini-3-pro",
@@ -12901,12 +11295,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-claude-haiku-4-5",
@@ -12927,12 +11316,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gemini-3-flash",
@@ -12943,12 +11327,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-nano",
@@ -12959,13 +11338,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gpt-5-4-nano",
@@ -12976,12 +11349,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "databricks-gemini-2-5-flash",
@@ -13003,12 +11371,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen2-5-vl-7b-instruct",
@@ -13392,14 +11755,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen.qwen3-coder-480b-a35b-v1:0",
@@ -13419,14 +11775,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "jp.anthropic.claude-opus-4-7",
@@ -13437,14 +11786,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral.pixtral-large-2502-v1:0",
@@ -13476,14 +11818,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "global.anthropic.claude-sonnet-4-6",
@@ -13494,13 +11829,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen.qwen3-235b-a22b-2507-v1:0",
@@ -13520,13 +11849,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "jp.anthropic.claude-sonnet-4-6",
@@ -13537,13 +11860,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek.v3.2",
@@ -13596,14 +11913,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "eu.anthropic.claude-opus-5",
@@ -13614,14 +11924,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral.mistral-large-3-675b-instruct",
@@ -13642,15 +11945,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "minimax.minimax-m2",
@@ -13730,14 +12025,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "jp.anthropic.claude-haiku-4-5-20251001-v1:0",
@@ -13759,14 +12047,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "global.anthropic.claude-sonnet-4-5-20250929-v1:0",
@@ -13830,14 +12111,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "amazon.nova-pro-v1:0",
@@ -13867,12 +12141,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai.gpt-5.5",
@@ -13883,14 +12152,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "minimax.minimax-m2.5",
@@ -13911,13 +12173,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "us.meta.llama4-scout-17b-instruct-v1:0",
@@ -13958,14 +12214,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek.v3-v1:0",
@@ -13996,14 +12245,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic.claude-sonnet-4-6",
@@ -14014,13 +12256,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic.claude-sonnet-5",
@@ -14031,14 +12267,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "global.anthropic.claude-fable-5",
@@ -14049,14 +12278,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "global.anthropic.claude-opus-4-8",
@@ -14067,14 +12289,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "eu.anthropic.claude-opus-4-5-20251101-v1:0",
@@ -14085,12 +12300,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google.gemma-3-27b-it",
@@ -14111,14 +12321,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral.magistral-small-2509",
@@ -14140,14 +12343,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "jp.anthropic.claude-opus-5",
@@ -14158,14 +12354,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "global.anthropic.claude-haiku-4-5-20251001-v1:0",
@@ -14187,13 +12376,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral.ministral-3-8b-instruct",
@@ -14234,15 +12417,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia.nemotron-nano-12b-v2",
@@ -14273,13 +12448,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "minimax.minimax-m2.1",
@@ -14300,12 +12469,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral.devstral-2-123b",
@@ -14325,14 +12489,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "us.anthropic.claude-sonnet-5",
@@ -14343,14 +12500,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai.gpt-oss-safeguard-20b",
@@ -14370,14 +12520,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen.qwen3-32b-v1:0",
@@ -14418,13 +12561,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai.glm-4.7",
@@ -14445,14 +12582,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "us.anthropic.claude-sonnet-4-6",
@@ -14463,13 +12593,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic.claude-opus-4-7",
@@ -14480,14 +12604,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai.glm-5",
@@ -14536,12 +12653,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google.gemma-3-12b-it",
@@ -14582,14 +12694,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "moonshotai.kimi-k2.5",
@@ -14611,12 +12716,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen.qwen3-next-80b-a3b",
@@ -14636,14 +12736,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
@@ -14664,12 +12757,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai.gpt-oss-20b",
@@ -14679,12 +12767,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "global.anthropic.claude-opus-5",
@@ -14695,14 +12778,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "meta.llama4-scout-17b-instruct-v1:0",
@@ -14733,12 +12809,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "us.anthropic.claude-opus-4-6-v1",
@@ -14749,13 +12820,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "eu.anthropic.claude-opus-4-8",
@@ -14766,14 +12831,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "amazon/nvidia.nemotron-nano-9b-v2",
@@ -14813,15 +12871,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "eu.anthropic.claude-opus-4-7",
@@ -14832,14 +12882,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai.gpt-oss-120b-1:0",
@@ -14849,12 +12892,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "eu.anthropic.claude-opus-4-6-v1",
@@ -14865,13 +12903,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "meta.llama3-1-70b-instruct-v1:0",
@@ -14902,13 +12934,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic.claude-opus-4-8",
@@ -14919,14 +12945,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral.ministral-3-14b-instruct",
@@ -15051,14 +13070,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-realtime-2.1",
@@ -15070,14 +13082,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "text-embedding-3-small",
@@ -15105,12 +13110,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mimo-v2-omni",
@@ -15163,13 +13163,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "grok-imagine-image",
@@ -15225,11 +13219,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org/GLM-5.2-FP8",
@@ -15239,11 +13229,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org/GLM-5.1-FP8",
@@ -15292,12 +13278,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-ai/DeepSeek-V3.2-fast",
@@ -15422,11 +13403,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "trendyol-7b",
@@ -15572,11 +13549,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "devstral-medium-2507",
@@ -15682,11 +13655,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "meta-llama-3_3-70b-instruct",
@@ -15706,11 +13675,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.6-35b",
@@ -15721,11 +13686,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral4-119b",
@@ -15736,11 +13697,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2.7-code-1100b",
@@ -15828,13 +13785,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gte-large-en-v1.5",
@@ -15854,13 +13805,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-o3",
@@ -15871,12 +13816,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-opus-5",
@@ -15887,14 +13827,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia-nemotron-3-super-120b",
@@ -15904,14 +13837,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "arcee-trinity-large-thinking",
@@ -15921,12 +13847,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-opus-4.5",
@@ -15937,13 +13858,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.4-pro",
@@ -15954,12 +13869,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-3.2",
@@ -15969,13 +13879,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-opus-4.8",
@@ -15986,13 +13890,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "wan2-2-t2v-a14b",
@@ -16029,14 +13927,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-4-flash",
@@ -16076,12 +13967,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "stable-diffusion-3.5-large",
@@ -16101,12 +13987,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "all-mini-lm-l6-v2",
@@ -16134,14 +14015,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-opus-4.7",
@@ -16152,13 +14026,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.4-mini",
@@ -16169,14 +14037,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "ministral-3-8b-instruct-2512",
@@ -16197,12 +14058,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "llama3.3-70b-instruct",
@@ -16222,12 +14078,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-o3-mini",
@@ -16238,12 +14089,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-tts-voicedesign",
@@ -16263,14 +14109,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-5-sonnet",
@@ -16280,13 +14119,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.3-codex",
@@ -16297,14 +14130,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-opus-4.6",
@@ -16315,13 +14141,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-haiku-4.5",
@@ -16332,12 +14152,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-4.5-haiku",
@@ -16348,12 +14163,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "multi-qa-mpnet-base-dot-v1",
@@ -16373,12 +14183,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-3.5-sonnet",
@@ -16399,12 +14204,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "llama3-8b-instruct",
@@ -16442,12 +14242,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-5.1-codex-max",
@@ -16458,13 +14253,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen-2.5-14b-instruct",
@@ -16493,14 +14282,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "e5-large-v2",
@@ -16519,12 +14301,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic-claude-opus-4",
@@ -16535,12 +14312,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/imagen-4.0-fast",
@@ -16659,11 +14431,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai/Mistral-Large-Instruct-2411",
@@ -16724,11 +14492,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "fugu-ultra-20260615",
@@ -16739,11 +14503,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "z-ai/glm-4.7-flash-free",
@@ -16763,11 +14523,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "z-ai/glm-4.6v-flash",
@@ -16821,10 +14577,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "moonshotai/kimi-k2.7-code-free",
@@ -16846,12 +14599,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.1-chat",
@@ -16881,12 +14629,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "stepfun/step-3.7-flash-free",
@@ -16897,12 +14640,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "sapiens-ai/agnes-1.5-pro",
@@ -16933,12 +14671,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "volcengine/doubao-seed-1.8",
@@ -16949,12 +14682,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "inclusionai/ling-1t",
@@ -17002,11 +14730,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-oss:20b",
@@ -17015,12 +14739,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3.5:397b",
@@ -17048,12 +14767,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nemotron-3-nano:30b",
@@ -17137,14 +14851,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "amazon--titan-embed-text",
@@ -17181,13 +14888,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistralai--mistral-small",
@@ -17197,11 +14898,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "amazon--nova-lite",
@@ -17211,12 +14908,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic--claude-4.5-haiku",
@@ -17244,13 +14936,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic--claude-3-haiku",
@@ -17269,12 +14955,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic--claude-4.7-opus",
@@ -17284,14 +14965,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "anthropic--claude-3.7-sonnet",
@@ -17346,14 +15020,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/gemma-3",
@@ -17441,12 +15108,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "essentialai/Rnj-1-Instruct",
@@ -17719,12 +15381,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "hermes-2-pro-llama-3-8b",
@@ -17839,12 +15496,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-5-flash-lite",
@@ -17855,13 +15507,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-2",
@@ -17872,14 +15518,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-6-flash",
@@ -17890,13 +15529,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-1",
@@ -17907,13 +15540,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-5-pro",
@@ -17924,12 +15551,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "meta-llama-3-1-8b-instruct",
@@ -17959,14 +15581,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-4",
@@ -17977,14 +15592,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-flash",
@@ -17995,12 +15603,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen35-122b-a10b",
@@ -18010,13 +15613,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-4-nano",
@@ -18027,14 +15624,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-5-flash",
@@ -18045,13 +15635,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "meta-llama-3-3-70b-instruct",
@@ -18118,14 +15702,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "cohere-command-a",
@@ -18231,12 +15808,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-3.5-turbo-1106",
@@ -18389,14 +15961,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-2.5-flash-nothink",
@@ -18434,13 +15999,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-4.5-airx",
@@ -18468,14 +16027,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-5-20251101-thinking",
@@ -18541,12 +16093,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "laguna-s-2.1-free",
@@ -18556,12 +16103,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nemotron-3.5-lightning-free",
@@ -18612,11 +16154,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-v4-flash-free",
@@ -18626,12 +16164,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "minimax-m3-free",
@@ -18711,12 +16244,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "ling-2.6-flash-free",
@@ -18849,14 +16377,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.1@eu",
@@ -18867,14 +16388,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4.1-nano@eu",
@@ -18895,14 +16409,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-5.2@eu",
@@ -18912,14 +16419,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.6-sol@eu",
@@ -18930,14 +16430,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-mini@eu",
@@ -18948,14 +16441,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.1-flash-lite@eu",
@@ -18966,14 +16452,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5@eu",
@@ -18984,14 +16463,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.5@eu",
@@ -19002,14 +16474,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.6-luna@eu",
@@ -19020,14 +16485,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5-nano@eu",
@@ -19038,14 +16496,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4.1-mini@eu",
@@ -19066,14 +16517,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k3@eu",
@@ -19084,14 +16528,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-6@eu",
@@ -19102,14 +16539,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-5@eu",
@@ -19120,14 +16550,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3.5-flash@eu",
@@ -19138,14 +16561,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-5@eu",
@@ -19156,14 +16572,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-6@eu",
@@ -19174,14 +16583,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-7@eu",
@@ -19192,14 +16594,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4.1@eu",
@@ -19219,14 +16614,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-haiku-4-5@eu",
@@ -19237,14 +16625,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-8@eu",
@@ -19255,14 +16636,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-4o-mini@eu",
@@ -19283,14 +16657,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.4@eu",
@@ -19301,14 +16668,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4@eu",
@@ -19319,14 +16679,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gpt-5.6-terra@eu",
@@ -19337,14 +16690,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-5@eu",
@@ -19355,14 +16701,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "inclusionAI/Ling-flash-2.0",
@@ -19503,13 +16842,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "fast",
@@ -19520,13 +16853,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "synth-code",
@@ -19537,13 +16864,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "e2e",
@@ -19554,13 +16875,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "zdr",
@@ -19571,13 +16886,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "synth",
@@ -19588,13 +16897,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "bge-multilingual-gemma2",
@@ -19623,12 +16926,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemini-3-1-pro-preview",
@@ -19639,12 +16937,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-glm-5-1",
@@ -19675,14 +16968,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/Nemotron-120B-A12B",
@@ -20137,12 +17423,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "cerebras/llama-3.1-8b-cs",
@@ -20253,11 +17534,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "ministral-8b-latest",
@@ -20370,13 +17647,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deep-deepseek-v4-pro",
@@ -20397,13 +17668,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deep-deepseek-v4-flash",
@@ -20434,14 +17699,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "coding-xiaomi-mimo-v2.5-pro",
@@ -20462,13 +17720,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "coding-minimax-m2.7-highspeed",
@@ -20509,14 +17761,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "doubao-seed-2-0-mini-260428",
@@ -20527,13 +17772,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-sonnet-4-6-think",
@@ -20544,13 +17783,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "coding-minimax-m2.7",
@@ -20624,13 +17857,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "alicloud-glm-5.1",
@@ -20651,14 +17878,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-35b-a3b",
@@ -20669,14 +17889,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-4-5-flash",
@@ -20717,14 +17930,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-27b",
@@ -20735,14 +17941,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-7-flash",
@@ -20753,14 +17952,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "mistral-small-4",
@@ -20780,14 +17972,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-9b",
@@ -20798,14 +17983,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-6-27b",
@@ -20816,14 +17994,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "step-3-7-flash",
@@ -20834,12 +18005,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-122b-a10b",
@@ -20850,14 +18016,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2-7-code-highspeed",
@@ -20878,14 +18037,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-397b-a17b",
@@ -20896,14 +18048,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-flash",
@@ -20925,14 +18070,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-v3-2",
@@ -20942,14 +18080,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "step-3-5-flash-2603",
@@ -20959,11 +18090,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "seed-2-0-code",
@@ -20974,12 +18101,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-5-plus",
@@ -21001,14 +18123,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "muse-spark-1-1",
@@ -21019,14 +18134,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen3-6-plus",
@@ -21047,14 +18155,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "hunyuan-2.0-thinking",
@@ -21111,10 +18212,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none"
-      ]
+      "reasoning": true
     },
     {
       "id": "ibm/granite-4-h-small",
@@ -21421,13 +18519,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai/gpt-5.1-thinking",
@@ -21438,13 +18530,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xai/grok-4.20-reasoning",
@@ -21466,13 +18552,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "xai/grok-4.20-reasoning-beta",
@@ -21779,12 +18859,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "kwaipilot/kat-coder-pro-v1",
@@ -21805,12 +18880,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "vertex/gemini-3.7-flash@us",
@@ -21821,12 +18891,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "vertex/gemini-3.6-flash@eu",
@@ -21837,13 +18902,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "vertex/gemini-3.5-flash@us",
@@ -21854,13 +18913,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "vertex/gemini-3.5-flash-lite@us",
@@ -21871,13 +18924,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "vertex/gemini-3.6-flash@us",
@@ -21888,13 +18935,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "vertex/gemini-3.5-flash-lite@eu",
@@ -21905,13 +18946,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "amazon/zai.glm-4.7-flash@us",
@@ -22124,11 +19159,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "solar-mini",
@@ -22145,12 +19176,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "custom",
@@ -22219,14 +19245,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen-plus-latest",
@@ -22257,16 +19276,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm-4-32b-0414-128k",
@@ -22297,12 +19307,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "seed-1-8-251228",
@@ -22313,13 +19318,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "seed-1-6-250915",
@@ -22330,13 +19329,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "llama-3.2-11b-instruct",
@@ -22356,13 +19349,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemma-3-27b",
@@ -22412,13 +19399,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen-coder-plus",
@@ -22579,13 +19560,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2.5-lightning",
@@ -22596,13 +19571,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "greg-rp",
@@ -22632,13 +19601,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "v0-1.0-md",
@@ -22834,14 +19797,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "duo-chat-gpt-5-6-terra",
@@ -22896,14 +19852,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "duo-chat-gpt-5-mini",
@@ -22936,14 +19885,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "duo-chat-opus-4-6",
@@ -22997,13 +19939,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "motif-technologies/motif-3",
@@ -23023,12 +19959,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "mai-code-1.1-flash",
@@ -23039,12 +19970,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "glm5.2-fast",
@@ -23054,14 +19980,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "tencent/hy3:free",
@@ -23071,12 +19990,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-pro:discounted",
@@ -23086,12 +20000,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek/deepseek-v4-flash:discounted",
@@ -23101,12 +20010,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "kilo-auto/small",
@@ -23161,12 +20065,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-BF16",
@@ -23176,12 +20075,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
@@ -23191,12 +20085,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8",
@@ -23206,12 +20095,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/gemma-3-4b-pt",
@@ -23221,12 +20105,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google/diffusiongemma-26B-A4B-it",
@@ -23236,13 +20115,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "Qwen/Qwen2.5-Coder-0.5B",
@@ -23261,12 +20134,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Qwen/Qwen3-4B-Base",
@@ -23276,12 +20144,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "Qwen/Qwen3-4B-Instruct-2507",
@@ -23291,13 +20154,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "fastino/gliner2-privacy-filter-PII-multi",
@@ -23397,12 +20254,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "deepseek-v4-flash-0731-fast",
@@ -23412,13 +20264,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "minimax-m3-preview",
@@ -23470,13 +20316,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-54-pro",
@@ -23487,14 +20327,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-55-pro",
@@ -23505,12 +20338,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "venice-uncensored-role-play",
@@ -23551,14 +20379,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k3-fast-api",
@@ -23579,13 +20400,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-55",
@@ -23596,14 +20411,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh"
-      ]
+      "reasoning": true
     },
     {
       "id": "aion-labs-aion-3-0-mini",
@@ -23613,12 +20421,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org-glm-5-2",
@@ -23628,12 +20431,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-56-luna-pro",
@@ -23644,15 +20442,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-56-terra",
@@ -23663,15 +20453,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-56-sol-pro",
@@ -23682,15 +20464,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-k2-5",
@@ -23711,13 +20485,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "claude-opus-4-8-fast",
@@ -23747,12 +20515,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-56-terra-pro",
@@ -23763,15 +20526,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "venice-uncensored-1-2",
@@ -23792,14 +20547,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-4o-mini-2024-07-18",
@@ -23830,13 +20578,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google-gemma-4-26b-a4b-it",
@@ -23847,13 +20589,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-52",
@@ -23863,14 +20599,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "minimax-m27",
@@ -23880,13 +20609,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-54-mini",
@@ -23897,14 +20620,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "z-ai-glm-5v-turbo",
@@ -23915,13 +20631,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen-3-7-max",
@@ -23952,13 +20662,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "zai-org-glm-4.7",
@@ -23968,12 +20672,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "grok-4-20-multi-agent",
@@ -23994,12 +20693,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "qwen-3-8-2-4t-a95b",
@@ -24020,15 +20714,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "gemma-4-uncensored",
@@ -24060,15 +20746,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high",
-        "xhigh",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "openai-gpt-52-codex",
@@ -24079,14 +20757,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "minimal",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "xiaomi-mimo-v2-5",
@@ -24097,13 +20768,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "google-gemma-4-31b-it",
@@ -24114,13 +20779,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "none",
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "accounts/fireworks/routers/kimi-k2p6-fast",
@@ -24141,11 +20800,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "accounts/fireworks/routers/kimi-k2p7-code-fast",
@@ -24218,11 +20873,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "accounts/fireworks/models/qwen3p7-plus",
@@ -24233,12 +20884,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "accounts/fireworks/models/kimi-k2p6",
@@ -24259,12 +20905,7 @@
       "input": [
         "text"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "medium",
-        "high"
-      ]
+      "reasoning": true
     },
     {
       "id": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B",
@@ -24303,12 +20944,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-for-coding-highspeed",
@@ -24330,12 +20966,7 @@
         "text",
         "image"
       ],
-      "reasoning": true,
-      "reasoningLevels": [
-        "low",
-        "high",
-        "max"
-      ]
+      "reasoning": true
     },
     {
       "id": "kimi-for-coding",
