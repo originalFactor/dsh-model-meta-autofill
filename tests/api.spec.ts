@@ -186,6 +186,7 @@ describe('reasoning declaration', () => {
     const views = listReasoning(rSection, rLookup, new Set(['gw']))
     assert.equal(views.length, 1)
     const gw = views[0]!
+    assert.equal(gw.api, 'openai-completions')
     assert.equal(gw.thinkingFormat, 'openai')
     assert.equal(gw.models.length, 3)
     const reason = gw.models.find((m) => m.id === 'reason-model')!
@@ -204,7 +205,7 @@ describe('reasoning declaration', () => {
     assert.deepEqual(listReasoning(rSection, rLookup, new Set(['other'])), [])
   })
 
-  it('writes the route-level thinkingFormat', () => {
+  it('writes the route-level thinkingFormat on an openai-completions route', () => {
     const result = applyReasoning(rSection, new Set(['gw']), 'gw', undefined, 'deepseek')
     assert.equal(result.ok, true)
     const providers = result.patch!.providers as Record<string, unknown>
@@ -212,6 +213,22 @@ describe('reasoning declaration', () => {
     assert.deepEqual(gw.compat, { thinkingFormat: 'deepseek' })
     // the rest of the profile rides along (array-replace safety)
     assert.equal((gw.models as unknown[]).length, 2)
+  })
+
+  it('pre-emptively rejects thinkingFormat on non-completions protocols', () => {
+    const responses: LlmPiAiSection = {
+      providers: { gw: { api: 'openai-responses', baseURL: 'https://gw.example/v1', models: [{ id: 'm' }] } },
+    }
+    const result = applyReasoning(responses, new Set(['gw']), 'gw', undefined, 'openai')
+    assert.equal(result.ok, false)
+    assert.ok((result.reason ?? '').includes('openai-completions'))
+    assert.ok((result.reason ?? '').includes('openai-responses'))
+    // per-model efforts are still accepted — that is the native path
+    const efforts = applyReasoning(responses, new Set(['gw']), 'gw', 'm', { off: null, high: 'high' })
+    assert.equal(efforts.ok, true)
+    // a route without an api is rejected too (unprovable protocol)
+    const noApi: LlmPiAiSection = { providers: { gw: { models: [{ id: 'm' }] } } }
+    assert.equal(applyReasoning(noApi, new Set(['gw']), 'gw', undefined, 'openai').ok, false)
   })
 
   it('writes a list model reasoningEfforts declaration', () => {

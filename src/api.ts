@@ -372,6 +372,8 @@ export interface ReasoningModelView {
 export interface ReasoningProviderView {
   provider: string
   userConfigured: boolean
+  /** The route's wire protocol (models use it unless they name their own). */
+  api: string | undefined
   /** Route-level compat.thinkingFormat, when configured. */
   thinkingFormat: string | undefined
   models: ReasoningModelView[]
@@ -390,6 +392,7 @@ export function listReasoning(
   for (const [provider, profile] of Object.entries(providers)) {
     if (userProviderIds !== undefined && !userProviderIds.has(provider)) continue
     if (profile === null || typeof profile !== 'object') continue
+    const api = typeof profile.api === 'string' ? profile.api : undefined
     const thinkingFormat = typeof profile.compat === 'object' && profile.compat !== null
       ? (profile.compat as Record<string, unknown>).thinkingFormat
       : undefined
@@ -417,7 +420,7 @@ export function listReasoning(
       if (raw === null || typeof raw !== 'object') continue
       pushModel(id, false, (raw as Record<string, unknown>).reasoningEfforts)
     }
-    views.push({ provider, userConfigured: true, thinkingFormat: typeof thinkingFormat === 'string' ? thinkingFormat : undefined, models })
+    views.push({ provider, userConfigured: true, api, thinkingFormat: typeof thinkingFormat === 'string' ? thinkingFormat : undefined, models })
   }
   return views
 }
@@ -447,9 +450,19 @@ export function applyReasoning(
   const profile = section?.providers?.[provider]
   if (profile === undefined) return { ok: false, reason: 'provider-not-found' }
 
-  // Route-level thinkingFormat.
+  // Route-level thinkingFormat. pi-ai's reasoning-dispatch switches exist
+  // only for the openai-completions protocol; the adapter refuses the write
+  // anywhere else, so answer pre-emptively with the actionable reason.
   if (modelId === undefined) {
     if (typeof value !== 'string' || value === '') return { ok: false, reason: 'thinkingFormat must be a string' }
+    const api = typeof profile.api === 'string' ? profile.api : undefined
+    if (api !== 'openai-completions') {
+      return {
+        ok: false,
+        reason: 'compat.thinkingFormat 只适用于 openai-completions 协议（当前路由：' + (api ?? '未指定')
+          + '）。该协议的推理等级请直接在模型上声明 reasoningEfforts',
+      }
+    }
     const nextCompat = { ...(profile.compat ?? {}), thinkingFormat: value }
     return { ok: true, patch: { providers: { [provider]: { ...profile, compat: nextCompat } } } }
   }
