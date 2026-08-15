@@ -1,0 +1,23 @@
+# dsh-model-meta-autofill bundle layer: inserts the plugin row. This file is
+# the package's dsh.bundle.patch layer and is applied automatically once the
+# package is in dsh.profile.bundles — do NOT copy this insert into the
+# profile's cordis.patch.yml (a duplicate entry id aborts boot). Override
+# config there with an id-targeted patch instead.
+# All config keys are optional; see src/config.ts for defaults.
+- insert:
+    - id: model-meta-autofill
+      name: 'dsh-model-meta-autofill'
+      config:
+        # models.dev (Model Metadata Registry) is the default catalog;
+        # named PublicProviderConf dist ids and URLs are accepted too.
+        sources: [models.dev]
+        # Fetch the latest dist catalogs at plugin start, then serve offline.
+        refreshOnStart: true
+        refreshIntervalMs: 0
+        timeoutMs: 15000
+        # Persist the enrichment into the llm-pi-ai settings section.
+        autoApply: true
+        dryRun: false
+        fillName: true
+        fillInput: true
+        fillReasoning: false

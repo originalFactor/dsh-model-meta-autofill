@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "strict": true,
+    "noUnusedLocals": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "lib/types",
+    "rootDir": "src",
+    "outDir": "lib",
+    "types": []
+  },
+  "include": [
+    "src/client.ts"
+  ]
+}
