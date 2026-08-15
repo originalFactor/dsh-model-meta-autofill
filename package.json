@@ -70,5 +70,13 @@
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QJAG1024/dsh-model-meta-autofill.git"
+  },
+  "homepage": "https://github.com/QJAG1024/dsh-model-meta-autofill#readme",
+  "bugs": {
+    "url": "https://github.com/QJAG1024/dsh-model-meta-autofill/issues"
   }
 }

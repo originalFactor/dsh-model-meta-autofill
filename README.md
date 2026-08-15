@@ -19,15 +19,21 @@ DSH 插件：为**自定义供应商**（`llm-pi-ai` 设置区）里配置的模
 
 ## 安装
 
-插件是**宿主侧（host）**插件，需装入运行 dsh web 的 profile（当前会话为 `~/.dsh/profiles/web`）。
+插件是**宿主侧（host）**插件，需装入运行 dsh web 的 profile（例如 `~/.dsh/profiles/web`）。
+
+从 npm 安装（发布版）：
 
 ```bash
-# 1) 构建产物
-pnpm build            # 生成 lib/（含打包的 lib/data/*.json）
+dsh plugin --profile web add dsh-model-meta-autofill
+```
 
-# 2) 打包或本地安装到 profile
+或从源码安装（本地构建）：
+
+```bash
+pnpm install          # 依赖解析需要 ../deepseek-harness checkout（见「开发」）
+pnpm build            # 生成 lib/（含打包的 lib/data/*.json）
 npm pack              # 产出 tarball
-dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径或 npm 包名>
+dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径>
 ```
 
 `cordis.patch.yml`（`dsh.bundle.patch`）会在安装时自动插入一行配置到 profile 的补丁层：
@@ -86,9 +92,9 @@ dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径或 npm 包�
 
 ## 数据源
 
-默认且唯一的打包上游是 **models.dev**（[Model Metadata Registry](https://models.dev/)，API 为 https://models.dev/api.json）——按厂商聚合的标准模型元数据目录：`limit.context/output` 一律为数字、字段口径统一（`modalities.input/output`、`reasoning`、知识截止日期、成本），覆盖包含最新型号的全量模型（对当前工作区的自定义模型 100% 命中）。如需 PublicProviderConf 网关拼写兜底，可用 `pnpm gen:data aihubmix` 生成快照并把 `aihubmix` 加进 `sources`。
+默认且唯一的打包上游是 **models.dev**（[Model Metadata Registry](https://models.dev/)，API 为 https://models.dev/api.json）——按厂商聚合的标准模型元数据目录：`limit.context/output` 一律为数字、字段口径统一（`modalities.input/output`、`reasoning`、知识截止日期、成本），覆盖包含最新型号的全量模型。如需 PublicProviderConf 网关拼写兜底，可用 `pnpm gen:data aihubmix` 生成快照并把 `aihubmix` 加进 `sources`。
 
-- 更新打包数据（在插件工作区）：
+- 更新打包数据（在本仓库根目录）：
 
 ```bash
 pnpm gen:data      # 拉取默认源并规整为 src/data/{source}.json（归一化逻辑即插件自身）
@@ -101,9 +107,11 @@ pnpm build         # 重新打包
 
 ## 开发
 
+前置：需要一份 DeepSeek Harness 源码 checkout 与本仓库同级放置于 `../deepseek-harness`——typecheck/测试所需的 `@deepseek-ai/*` 类型与实现通过 `tsconfig.json` 的 `paths` 指向该 checkout（npm 上发布的同名包版本可用于安装时的运行时依赖，但开发期以 checkout 为准）。
+
 ```bash
 pnpm typecheck            # tsc -p tsconfig.json（src + tests）
-pnpm test                 # node 内置测试器 + tsx：dataset / enrich / 集成（真实 SettingsProvider）
+pnpm test                 # node 内置测试器 + tsx：dataset / enrich / api / 集成（真实 SettingsProvider）
 pnpm build                # tsc -p tsconfig.build.json + scripts/copy-data.mjs → lib/
 ```
 
