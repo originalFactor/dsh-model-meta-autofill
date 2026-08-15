@@ -1,0 +1,5 @@
+add release workflow with npm OIDC trusted publishing
+
+- tag-triggered: test (typecheck + suite) then publish
+- no long-lived npm token; id-token: write + setup-node oidc
+- fetches a harness checkout for the tsconfig paths used in typecheck/tests

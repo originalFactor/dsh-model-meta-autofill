@@ -1,0 +1,45 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write   # OIDC — npm trusted publishing (no long-lived token)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Dev-time @deepseek-ai types/implementations resolve through tsconfig
+      # paths against a source checkout of the harness (see README "开发").
+      - name: Fetch DeepSeek Harness checkout for typecheck paths
+        run: git clone --depth 1 https://github.com/deepseek-ai/deepseek-harness.git ../deepseek-harness
+      - name: Install
+        run: npm i --no-fund --no-audit
+      - name: Typecheck
+        run: npx tsc -p tsconfig.json
+      - name: Unit + integration tests
+        run: npx tsx --test tests/dataset.spec.ts tests/enrich.spec.ts tests/api.spec.ts tests/integration/settings-autofill.spec.ts
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+          oidc: true
+      - name: Install
+        run: npm i --no-fund --no-audit
+      - name: Build
+        run: npm run build
+      - name: Publish to npm
+        run: npm publish

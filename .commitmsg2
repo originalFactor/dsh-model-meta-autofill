@@ -1,5 +1,0 @@
-release prep: repository metadata, README cleanup for public publishing
-
-- package.json: repository/homepage/bugs (github.com/QJAG1024/dsh-model-meta-autofill)
-- README: remove session/workspace-specific wording; npm install path first,
-  source build documented with the ../deepseek-harness checkout prerequisite
