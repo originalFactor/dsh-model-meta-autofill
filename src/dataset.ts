@@ -30,6 +30,13 @@ export interface CatalogEntry {
   reasoning?: boolean
   /** Catalog-declared vision capability (advisory). */
   vision?: boolean
+  /**
+   * Selectable reasoning effort names the catalog declares for this model
+   * (models.dev reasoning_options effort values, catalog order preserved).
+   * Toggle-only models reason but carry no level ladder — an empty list with
+   * reasoning true describes that.
+   */
+  reasoningLevels?: readonly string[]
   /** The model's making-vendor label, when the catalog names one (models.dev). */
   vendor?: string
 }
@@ -131,6 +138,27 @@ function mapInput(raw: Record<string, unknown>): readonly ('text' | 'image')[] |
 }
 
 /**
+ * Collect the effort ladder a models.dev reasoning_options declaration
+ * carries: every {type:'effort', values:[...]} group contributes its values
+ * in order (deduplicated). Toggle-style declarations contribute nothing
+ * here — their presence is carried by the model's reasoning flag alone.
+ */
+export function parseReasoningOptions(raw: unknown): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined
+  const levels: string[] = []
+  for (const option of raw) {
+    if (option === null || typeof option !== 'object') continue
+    const record = option as Record<string, unknown>
+    if (record.type !== 'effort' || !Array.isArray(record.values)) continue
+    for (const value of record.values) {
+      if (typeof value !== 'string' || value.length === 0) continue
+      if (!levels.includes(value)) levels.push(value)
+    }
+  }
+  return levels.length > 0 ? levels : undefined
+}
+
+/**
  * Normalize one raw dist model entry into a {@link CatalogEntry}. Entries
  * carrying neither a context nor an output cap are dropped: a model the
  * catalog cannot size is not something this plugin should guess at.
@@ -157,6 +185,8 @@ export function normalizeEntry(raw: unknown): CatalogEntry | undefined {
   const reasoning = record.reasoning as { supported?: unknown } | boolean | null | undefined
   if (reasoning === true || typeof reasoning === 'object' && reasoning?.supported === true) entry.reasoning = true
   if (record.vision === true) entry.vision = true
+  const levels = parseReasoningOptions(record.reasoning_options)
+  if (levels !== undefined && levels.length > 0) entry.reasoningLevels = levels
   return entry
 }
 
@@ -232,6 +262,7 @@ export class ModelMetaIndex {
       ...entry.input === undefined ? {} : { input: [...entry.input] },
       ...entry.reasoning === undefined ? {} : { reasoning: entry.reasoning },
       ...entry.vendor === undefined ? {} : { vendor: entry.vendor },
+      ...entry.reasoningLevels === undefined ? {} : { reasoningLevels: [...entry.reasoningLevels] },
     }
     for (const alias of aliasesOf(entry.id)) this.byId.set(alias, value)
     this.byId.set(entry.id, value)

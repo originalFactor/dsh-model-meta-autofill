@@ -69,6 +69,17 @@ dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径或 npm 包�
 | `/model-meta-autofill/api/apply` | POST | `{provider, modelId, overwrite?, nameStyle?}` 单模型换用目录值；返回 `{ok:true, applied}` 或 `{ok:false, reason:'no-match'\|...}` |
 | `/model-meta-autofill/api/apply-all` | POST | `{nameStyle?}` 全部覆盖（一个补丁覆盖所有已匹配模型）；返回 `{ok, filled, missed}` |
 
+## 思考等级（推理强度）声明
+
+自定义供应商走 llm-pi-ai 适配器，支持完整的推理等级链路（off/minimal/low/medium/high/xhigh/max），但**手写的模型没有推理元数据**，模型选择器里就不会出现强度选项。本分区补上这个声明环节：
+
+1. **wire 协议**：每个供应商卡片里选 compat.thinkingFormat（openai / deepseek / openrouter / together / zai / qwen / string-thinking / ant-ling）——这是等级翻译成的 wire 参数格式，取决于你的网关方言；
+2. **每个模型的等级**：展开模型行，勾选要开放的等级、填每级的 wire 值（预填值按所选协议自动给出；「填入建议」用 models.dev 的 reasoning_options 档位建议一键生成草稿），点「应用等级」写入 reasoningEfforts；也可以「声明非推理」（reasoningEfforts: false）；
+3. 声明写入后，**输入框右下角的模型选择器自动出现强度选项**（与 DeepSeek 官方路径同款交互），选择经 thinkingLevelMap 翻译成 wire 值发给网关。
+
+> wire 值是否正确取决于网关：声明环节把推荐值预填了，但网关若不认某个参数，行为由网关决定（多数忽略）。
+
+
 ## 配置
 
 | 键 | 类型 | 默认 | 说明 |

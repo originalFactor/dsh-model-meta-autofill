@@ -18,6 +18,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { LookedUpEntry } from './dataset.ts'
 import type { LlmPiAiSection } from './enrich.ts'
+import { presetLadder, validateEfforts } from './reasoning.ts'
 
 export type { LlmPiAiSection }
 
@@ -348,6 +349,128 @@ export function applyAll(
   }
   const patch = Object.keys(providersPatch).length > 0 ? { providers: providersPatch } : undefined
   return { ok: true, ...patch === undefined ? {} : { patch }, filled, missed }
+}
+
+/* ------------------------------------------------- reasoning declaration --- */
+
+/** One model's reasoning declaration view. */
+export interface ReasoningModelView {
+  id: string
+  /** Whether the model is a list entry (true) or an override (false). */
+  isList: boolean
+  /** The configured declaration: a levels dict, false (disabled), or undefined (unset). */
+  declared: Record<string, string | null> | false | undefined
+  /** Whether models.dev reports the model reasons at all. */
+  catalogReasoning: boolean
+  /** The preset ladder for this model (off + declared effort levels). */
+  preset: string[]
+  /** Catalog-declared effort names (raw). */
+  catalogLevels: readonly string[] | undefined
+}
+
+/** One provider's reasoning declaration view. */
+export interface ReasoningProviderView {
+  provider: string
+  userConfigured: boolean
+  /** Route-level compat.thinkingFormat, when configured. */
+  thinkingFormat: string | undefined
+  models: ReasoningModelView[]
+}
+
+/** Read every user-layer provider's reasoning declarations. */
+export function listReasoning(
+  section: LlmPiAiSection | undefined,
+  lookup: (id: string) => LookedUpEntry | undefined,
+  userProviderIds?: ReadonlySet<string>,
+): ReasoningProviderView[] {
+  if (section === undefined) return []
+  const providers = section.providers
+  if (providers === undefined) return []
+  const views: ReasoningProviderView[] = []
+  for (const [provider, profile] of Object.entries(providers)) {
+    if (userProviderIds !== undefined && !userProviderIds.has(provider)) continue
+    if (profile === null || typeof profile !== 'object') continue
+    const thinkingFormat = typeof profile.compat === 'object' && profile.compat !== null
+      ? (profile.compat as Record<string, unknown>).thinkingFormat
+      : undefined
+    const models: ReasoningModelView[] = []
+    const pushModel = (id: string, isList: boolean, declared: unknown): void => {
+      const meta = lookup(id)
+      models.push({
+        id,
+        isList,
+        declared: declared === undefined ? undefined
+          : declared === false ? false
+            : declared !== null && typeof declared === 'object' ? declared as Record<string, string | null>
+              : undefined,
+        catalogReasoning: meta?.reasoning === true,
+        preset: presetLadder(meta),
+        catalogLevels: meta?.reasoningLevels,
+      })
+    }
+    for (const raw of profile.models ?? []) {
+      if (raw === null || typeof raw !== 'object') continue
+      const model = raw as unknown as Record<string, unknown>
+      if (typeof model.id === 'string') pushModel(model.id, true, model.reasoningEfforts)
+    }
+    for (const [id, raw] of Object.entries(profile.modelOverrides ?? {})) {
+      if (raw === null || typeof raw !== 'object') continue
+      pushModel(id, false, (raw as Record<string, unknown>).reasoningEfforts)
+    }
+    views.push({ provider, userConfigured: true, thinkingFormat: typeof thinkingFormat === 'string' ? thinkingFormat : undefined, models })
+  }
+  return views
+}
+
+/** One reasoning-declaration write outcome. */
+export interface ReasoningWriteResult {
+  ok: boolean
+  patch?: Record<string, unknown>
+  reason?: string
+}
+
+/**
+ * Build the patch writing one model's reasoningEfforts declaration (or, when
+ * modelId is undefined, the route's compat.thinkingFormat). Only user-layer
+ * providers are writable.
+ */
+export function applyReasoning(
+  section: LlmPiAiSection | undefined,
+  userProviderIds: ReadonlySet<string> | undefined,
+  provider: string,
+  modelId: string | undefined,
+  value: Record<string, string | null> | false | string,
+): ReasoningWriteResult {
+  if (userProviderIds !== undefined && !userProviderIds.has(provider)) {
+    return { ok: false, reason: 'provider-not-configured' }
+  }
+  const profile = section?.providers?.[provider]
+  if (profile === undefined) return { ok: false, reason: 'provider-not-found' }
+
+  // Route-level thinkingFormat.
+  if (modelId === undefined) {
+    if (typeof value !== 'string' || value === '') return { ok: false, reason: 'thinkingFormat must be a string' }
+    const nextCompat = { ...(profile.compat ?? {}), thinkingFormat: value }
+    return { ok: true, patch: { providers: { [provider]: { ...profile, compat: nextCompat } } } }
+  }
+
+  const error = validateEfforts(value)
+  if (error !== undefined) return { ok: false, reason: error }
+  const located = entryOf(profile, modelId)
+  if (located === undefined) return { ok: false, reason: 'model-not-found' }
+  const nextEntry = { ...located.head, reasoningEfforts: value }
+
+  let patch: Record<string, unknown>
+  if (located.kind === 'list') {
+    const rebuilt = (profile.models ?? []).map((raw) => raw as unknown as Record<string, unknown>)
+    rebuilt[located.index] = { ...(rebuilt[located.index] as Record<string, unknown>), reasoningEfforts: value }
+    patch = { providers: { [provider]: { ...profile, models: rebuilt } } }
+  } else {
+    const overrides = { ...(profile.modelOverrides ?? {}) } as Record<string, unknown>
+    overrides[modelId] = nextEntry
+    patch = { providers: { [provider]: { modelOverrides: overrides } } }
+  }
+  return { ok: true, patch }
 }
 
 /* ---------------------------------------------------------------- HTTP --- */

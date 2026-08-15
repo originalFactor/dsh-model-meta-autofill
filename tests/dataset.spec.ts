@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  ModelMetaIndex, aliasesOf, collectEntries, dedupeSizedEntries, normalizeEntry,
+  ModelMetaIndex, aliasesOf, collectEntries, dedupeSizedEntries, normalizeEntry, parseReasoningOptions,
 } from '../src/dataset.ts'
 
 describe('normalizeEntry', () => {
@@ -153,6 +153,30 @@ describe('collectEntries (models.dev shape)', () => {
     assert.equal(dsv4?.contextWindow, 1_048_576)
     assert.deepEqual(dsv4?.input, ['text'])
     assert.ok(entries.some((e) => e.id === 'openai/gpt-5.2-pro'))
+  })
+})
+
+describe('reasoning options parsing', () => {
+  it('collects effort ladders in order and ignores toggles', () => {
+    assert.deepEqual(parseReasoningOptions([{ type: 'effort', values: ['low', 'medium', 'high'] }]), ['low', 'medium', 'high'])
+    assert.deepEqual(parseReasoningOptions([{ type: 'toggle' }]), undefined)
+    assert.deepEqual(parseReasoningOptions([{ type: 'effort', values: ['none', 'low'] }, { type: 'effort', values: ['low', 'high'] }]), ['none', 'low', 'high'])
+    assert.deepEqual(parseReasoningOptions(undefined), undefined)
+    assert.deepEqual(parseReasoningOptions('x'), undefined)
+  })
+
+  it('normalizeEntry carries reasoningLevels and the reasoning flag', () => {
+    const entry = normalizeEntry({
+      id: 'm', limit: { context: 10, output: 10 }, reasoning: true,
+      reasoning_options: [{ type: 'effort', values: ['low', 'high'] }],
+    })
+    assert.equal(entry?.reasoning, true)
+    assert.deepEqual(entry?.reasoningLevels, ['low', 'high'])
+  })
+
+  it('the index serves reasoningLevels', () => {
+    const index = new ModelMetaIndex([{ id: 'm', contextWindow: 1, reasoning: true, reasoningLevels: ['high', 'max'] }])
+    assert.deepEqual(index.lookup('m')?.reasoningLevels, ['high', 'max'])
   })
 })
 

@@ -31,7 +31,10 @@ import type { Context } from '@deepseek-ai/cordis'
 import { settingsNamespace, type SettingsNamespace } from '@deepseek-ai/dsh-settings'
 // Type-only import: the Context.webServer augmentation ships with this package.
 import type {} from '@deepseek-ai/dsh-host-webserver'
-import { applyAll, applyRow, listRows, readJsonBody, sendJson, type NameStyle } from './api.ts'
+import {
+  applyAll, applyReasoning, applyRow, listReasoning, listRows, readJsonBody, sendJson, type NameStyle,
+} from './api.ts'
+import { THINKING_FORMATS } from './reasoning.ts'
 import type { Config } from './config.ts'
 import { DEFAULT_BASE_URL, resolveConfig, TARGET_NAMESPACE } from './config.ts'
 import {
@@ -229,6 +232,55 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
               sendJson(res, 200, { ok: true, filled: result.filled, missed: result.missed })
             } catch (error) {
               ctx.logger.warn('dsh-model-meta-autofill: apply-all failed: %s', String(error))
+              const message = error instanceof Error ? (error.message || String(error)) : String(error)
+              const hint = /writer lock/i.test(message)
+                ? ' | hint: ~/.dsh/settings.yaml.lock may be orphaned; if the PID inside it is not running, delete the file'
+                : ''
+              sendJson(res, 200, { ok: false, reason: 'write-failed', message: message + hint })
+            }
+          },
+        }),
+        sctx.webServer.register({
+          kind: 'exact',
+          path: '/model-meta-autofill/api/reasoning',
+          handler: (_req, res) => {
+            sendJson(res, 200, {
+              formats: THINKING_FORMATS,
+              providers: listReasoning(section(), lookupIndex, userProviderIdsOf(sctx)),
+            })
+          },
+        }),
+        sctx.webServer.register({
+          kind: 'exact',
+          path: '/model-meta-autofill/api/reasoning/apply',
+          handler: async (req, res) => {
+            try {
+              const body = await readJsonBody(req) as {
+                provider?: unknown; modelId?: unknown; efforts?: unknown; thinkingFormat?: unknown
+              }
+              const provider = typeof body?.provider === 'string' ? body.provider : ''
+              if (provider === '') {
+                sendJson(res, 400, { ok: false, reason: 'provider is required' })
+                return
+              }
+              // Route-level protocol, or a per-model efforts declaration.
+              const result = typeof body?.thinkingFormat === 'string'
+                ? applyReasoning(section(), userProviderIdsOf(sctx), provider, undefined, body.thinkingFormat)
+                : applyReasoning(
+                  section(),
+                  userProviderIdsOf(sctx),
+                  provider,
+                  typeof body?.modelId === 'string' ? body.modelId : undefined,
+                  (body?.efforts ?? false) as Record<string, string | null> | false | string,
+                )
+              if (!result.ok || result.patch === undefined) {
+                sendJson(res, 200, { ok: false, reason: result.reason, provider })
+                return
+              }
+              await sctx.settings.update(NS, result.patch)
+              sendJson(res, 200, { ok: true, provider })
+            } catch (error) {
+              ctx.logger.warn('dsh-model-meta-autofill: reasoning apply failed: %s', String(error))
               const message = error instanceof Error ? (error.message || String(error)) : String(error)
               const hint = /writer lock/i.test(message)
                 ? ' | hint: ~/.dsh/settings.yaml.lock may be orphaned; if the PID inside it is not running, delete the file'
