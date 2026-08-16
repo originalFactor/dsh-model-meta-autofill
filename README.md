@@ -110,7 +110,7 @@ pnpm build         # 重新打包
 
 ## 开发
 
-前置：需要一份 DeepSeek Harness 源码 checkout 与本仓库同级放置于 `../deepseek-harness`——typecheck/测试所需的 `@deepseek-ai/*` 类型与实现通过 `tsconfig.json` 的 `paths` 指向该 checkout（npm 上发布的同名包版本可用于安装时的运行时依赖，但开发期以 checkout 为准）。
+所有开发期依赖（`@deepseek-ai/cordis`、`dsh-settings`、`dsh-host-webserver`、`dsh-credentials` 等）都从 npm 安装的发布版本解析，`npm i` 即可，无需 DeepSeek Harness 源码 checkout。
 
 ```bash
 pnpm typecheck            # tsc -p tsconfig.json（src + tests）

@@ -1,0 +1,13 @@
+ci: decouple typecheck from harness checkout; pin deps to published versions
+
+The release workflow failed because tsconfig paths/typeRoots pointed at a
+local DeepSeek Harness checkout that CI does not have. All @deepseek-ai/*
+types and implementations now resolve from the published npm packages
+(cordis 4.0.1, dsh-settings/host-webserver/credentials at 0.1.0-rc.6 which
+carry the webServer augmentation). Removed the harness-clone step from the
+workflow and updated the README dev prerequisites to match.
+
+- tsconfig.json: drop checkout paths/typeRoots
+- package.json: devDependencies pinned to published versions
+- release.yml: no longer clones deepseek-harness
+- README: dev setup is now 'npm i', no checkout needed

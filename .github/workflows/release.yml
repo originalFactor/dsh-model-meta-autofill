@@ -16,10 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Dev-time @deepseek-ai types/implementations resolve through tsconfig
-      # paths against a source checkout of the harness (see README "开发").
-      - name: Fetch DeepSeek Harness checkout for typecheck paths
-        run: git clone --depth 1 https://github.com/deepseek-ai/deepseek-harness.git ../deepseek-harness
       - name: Install
         run: npm i --no-fund --no-audit
       - name: Typecheck
