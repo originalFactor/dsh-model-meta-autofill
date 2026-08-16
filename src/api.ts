@@ -40,6 +40,10 @@ export interface ProviderRowsView {
   provider: string
   /** Whether the route lives in the user layer (only these are writable). */
   userConfigured: boolean
+  /** The route's endpoint (for the discovery URL default). */
+  baseURL: string | undefined
+  /** The route's wire protocol (anthropic-messages has no standard models endpoint). */
+  api: string | undefined
   models: ModelRowView[]
 }
 
@@ -118,7 +122,7 @@ function entryOf(profile: { models?: unknown; modelOverrides?: unknown } | undef
 }
 
 /** The catalog-view fields one lookup contributes to a row. */
-function catalogView(meta: LookedUpEntry | undefined): Omit<LookedUpEntry, 'id'> | undefined {
+export function catalogView(meta: LookedUpEntry | undefined): Omit<LookedUpEntry, 'id'> | undefined {
   if (meta === undefined) return undefined
   return {
     ...meta.vendor === undefined ? {} : { vendor: meta.vendor },
@@ -179,7 +183,9 @@ export function listRows(
         },
       })
     }
-    rows.push({ provider, userConfigured, models })
+    const baseURL = typeof profile.baseURL === 'string' ? profile.baseURL : undefined
+    const api = typeof profile.api === 'string' ? profile.api : undefined
+    rows.push({ provider, userConfigured, baseURL, api, models })
   }
   return rows
 }
@@ -370,4 +376,98 @@ export async function readJsonBody(req: IncomingMessage): Promise<unknown> {
 export function sendJson(res: ServerResponse, status: number, payload: unknown): void {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' })
   res.end(JSON.stringify(payload))
+}
+
+/* ------------------------------------------------------- model discovery --- */
+
+/**
+ * Default discovery URL for one route: the OpenAI-compatible models listing.
+ * A baseURL already ending in `/v1` only needs `/models` appended; anything
+ * else gets the full `/v1/models` suffix (bare gateways, custom hosts).
+ * @param baseURL - the route's endpoint, trailing-slash tolerant.
+ * @returns the candidate listing URL.
+ */
+export function defaultModelsUrl(baseURL: string | undefined): string {
+  const base = (baseURL ?? '').replace(/\/+$/, '')
+  if (base === '') return '/v1/models'
+  return /\/v1$/.test(base) ? base + '/models' : base + '/v1/models'
+}
+
+/** One model parsed out of a gateway listing response. */
+export interface DiscoveredModel {
+  id: string
+  name?: string
+}
+
+/**
+ * Parse a gateway models-listing payload tolerantly. Shapes seen in the wild:
+ * `{data:[...]}` (the OpenAI standard), `{models:[...]}`, a bare array, or a
+ * `{results:[...]}` paging envelope. Every candidate object contributes its
+ * `id`; `name` rides along when present. Anything id-less is skipped, so a
+ * nonconforming gateway degrades to "no models" rather than an error.
+ */
+export function parseModelsPayload(payload: unknown): DiscoveredModel[] {
+  if (payload === null || typeof payload !== 'object') return []
+  let list: unknown
+  if (Array.isArray(payload)) {
+    list = payload
+  } else {
+    const record = payload as Record<string, unknown>
+    list = Array.isArray(record.data) ? record.data
+      : Array.isArray(record.models) ? record.models
+        : Array.isArray(record.results) ? record.results
+          : undefined
+  }
+  if (!Array.isArray(list)) return []
+  const models: DiscoveredModel[] = []
+  for (const item of list) {
+    if (item === null || typeof item !== 'object') continue
+    const record = item as Record<string, unknown>
+    const id = typeof record.id === 'string' && record.id !== '' ? record.id
+      : typeof record.model === 'string' && record.model !== '' ? record.model
+        : undefined
+    if (id === undefined) continue
+    const name = typeof record.name === 'string' && record.name !== '' ? record.name : undefined
+    models.push({ id, ...name === undefined ? {} : { name } })
+  }
+  return models
+}
+
+/** Outcome of adding discovered models to a route's `models` list. */
+export interface AddModelsResult {
+  ok: boolean
+  patch?: Record<string, unknown>
+  reason?: string
+  /** The model ids actually added (duplicates of the configured list skipped). */
+  added?: string[]
+}
+
+/**
+ * Build the patch appending discovered model entries to one route's `models`
+ * list. Ids already configured (models list or modelOverrides) are skipped;
+ * the rest join as bare `{id}` entries the auto-fill pass then enriches.
+ */
+export function applyModelsAdd(
+  section: LlmPiAiSection | undefined,
+  userProviderIds: ReadonlySet<string> | undefined,
+  provider: string,
+  modelIds: readonly string[],
+): AddModelsResult {
+  if (userProviderIds !== undefined && !userProviderIds.has(provider)) {
+    return { ok: false, reason: 'provider-not-configured' }
+  }
+  const profile = section?.providers?.[provider]
+  if (profile === undefined) return { ok: false, reason: 'provider-not-found' }
+  const existing = new Set<string>()
+  for (const raw of profile.models ?? []) {
+    if (raw !== null && typeof raw === 'object') {
+      const id = (raw as unknown as Record<string, unknown>).id
+      if (typeof id === 'string') existing.add(id)
+    }
+  }
+  for (const id of Object.keys(profile.modelOverrides ?? {})) existing.add(id)
+  const added = modelIds.filter((id) => typeof id === 'string' && id !== '' && !existing.has(id))
+  if (added.length === 0) return { ok: true, added: [] }
+  const nextModels = [...(profile.models ?? []), ...added.map((id) => ({ id }))]
+  return { ok: true, patch: { providers: { [provider]: { ...profile, models: nextModels } } }, added }
 }

@@ -31,7 +31,10 @@ import type { Context } from '@deepseek-ai/cordis'
 import { settingsNamespace, type SettingsNamespace } from '@deepseek-ai/dsh-settings'
 // Type-only import: the Context.webServer augmentation ships with this package.
 import type {} from '@deepseek-ai/dsh-host-webserver'
-import { applyAll, applyRow, listRows, readJsonBody, sendJson, type NameStyle } from './api.ts'
+import {
+  applyAll, applyModelsAdd, applyRow, catalogView, defaultModelsUrl, listRows,
+  parseModelsPayload, readJsonBody, sendJson, type NameStyle,
+} from './api.ts'
 import type { Config } from './config.ts'
 import { DEFAULT_BASE_URL, resolveConfig, TARGET_NAMESPACE } from './config.ts'
 import {
@@ -237,6 +240,82 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
             }
           },
         }),
+        sctx.webServer.register({
+          kind: 'exact',
+          path: '/model-meta-autofill/api/discover',
+          handler: async (req, res) => {
+            try {
+              const body = await readJsonBody(req) as { provider?: unknown; url?: unknown }
+              const provider = typeof body?.provider === 'string' ? body.provider : ''
+              if (provider === '') { sendJson(res, 400, { ok: false, reason: 'provider is required' }); return }
+              const profile = section()?.providers?.[provider] as Record<string, unknown> | undefined
+              if (profile === undefined) { sendJson(res, 200, { ok: false, reason: 'provider-not-found', provider }); return }
+              const baseURL = typeof profile.baseURL === 'string' ? profile.baseURL : undefined
+              const url = typeof body?.url === 'string' && body.url !== '' ? body.url : defaultModelsUrl(baseURL)
+              const apiKeyEnv = typeof profile.apiKeyEnv === 'string' ? profile.apiKeyEnv : undefined
+              // Resolve the credential on the host; the value never reaches the client.
+              let apiKey: string | undefined
+              if (apiKeyEnv !== undefined) {
+                const credentials = (sctx as unknown as { credentials?: { resolve: (ref: string) => Promise<{ value?: string } | undefined> } }).credentials
+                const hit = credentials !== undefined ? await credentials.resolve(apiKeyEnv) : undefined
+                apiKey = typeof hit?.value === 'string' && hit.value !== '' ? hit.value : undefined
+              }
+              const controller = new AbortController()
+              const timer = setTimeout(() => controller.abort(new Error('discovery timed out')), config.timeoutMs)
+              let response: Response
+              try {
+                response = await fetch(url, {
+                  headers: {
+                    accept: 'application/json',
+                    ...apiKey === undefined ? {} : { authorization: 'Bearer ' + apiKey },
+                  },
+                  signal: controller.signal,
+                })
+              } finally { clearTimeout(timer) }
+              if (!response.ok) {
+                sendJson(res, 200, { ok: false, reason: 'fetch-failed', status: response.status, url })
+                return
+              }
+              const payload = await response.json() as unknown
+              const models = parseModelsPayload(payload)
+              const enriched = models.map((m) => ({ id: m.id, name: m.name, catalog: catalogView(lookupIndex(m.id)) }))
+              sendJson(res, 200, { ok: true, url, count: enriched.length, models: enriched })
+            } catch (error) {
+              ctx.logger.warn('dsh-model-meta-autofill: discover failed: %s', String(error))
+              const message = error instanceof Error ? (error.message || String(error)) : String(error)
+              sendJson(res, 200, { ok: false, reason: 'fetch-failed', message })
+            }
+          },
+        }),
+        sctx.webServer.register({
+          kind: 'exact',
+          path: '/model-meta-autofill/api/discover/add',
+          handler: async (req, res) => {
+            try {
+              const body = await readJsonBody(req) as { provider?: unknown; modelIds?: unknown }
+              const provider = typeof body?.provider === 'string' ? body.provider : ''
+              const modelIds = Array.isArray(body?.modelIds)
+                ? (body.modelIds as unknown[]).filter((v): v is string => typeof v === 'string' && v !== '')
+                : []
+              if (provider === '' || modelIds.length === 0) {
+                sendJson(res, 400, { ok: false, reason: 'provider and modelIds are required' })
+                return
+              }
+              const result = applyModelsAdd(section(), userProviderIdsOf(sctx), provider, modelIds)
+              if (!result.ok) { sendJson(res, 200, { ok: false, reason: result.reason, provider }); return }
+              if (result.patch === undefined) { sendJson(res, 200, { ok: true, added: [], provider }); return }
+              await sctx.settings.update(NS, result.patch)
+              sendJson(res, 200, { ok: true, added: result.added ?? [], provider })
+            } catch (error) {
+              ctx.logger.warn('dsh-model-meta-autofill: discover/add failed: %s', String(error))
+              const message = error instanceof Error ? (error.message || String(error)) : String(error)
+              const hint = /writer lock/i.test(message)
+                ? ' | hint: ~/.dsh/settings.yaml.lock may be orphaned; if the PID inside it is not running, delete the file'
+                : ''
+              sendJson(res, 200, { ok: false, reason: 'write-failed', message: message + hint })
+            }
+          },
+        }),
       ]
       return () => { for (const dispose of disposers) dispose() }
     }, 'dsh-model-meta-autofill.web-api')
@@ -283,12 +362,20 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
   ctx.inject(['settings'], (sctx) => {
     let inFlight: Promise<void> | undefined
     let attempts = 0
+    // Set while a pass is in flight when a settings/updated event lands; the
+    // finishing pass then re-runs once. Without this, a "delete + re-add" pair
+    // of quick consecutive writes can lose the second event (the pass for the
+    // first is still flying) and leave the re-added entry unfilled.
+    let pendingRescan = false
 
     const userProviderIds = (): ReadonlySet<string> => userProviderIdsOf(sctx)
 
     const runPass = (reason: string): Promise<void> => {
       if (inFlight !== undefined) {
-        ctx.logger.debug('dsh-model-meta-autofill: skipping pass (%s): %s', reason, IN_FLIGHT_SKIP_REASON)
+        // Don't drop the event: remember it so the in-flight pass re-scans
+        // when it settles. Coalesce repeated events into one rescan.
+        pendingRescan = true
+        ctx.logger.debug('dsh-model-meta-autofill: deferring pass (%s): %s', reason, IN_FLIGHT_SKIP_REASON)
         return inFlight
       }
       const pass = (async (): Promise<void> => {
@@ -323,7 +410,13 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
           ctx.logger.warn('dsh-model-meta-autofill: enrichment pass failed: %s', String(error))
         }
       })()
-        .finally(() => { inFlight = undefined })
+        .finally(() => {
+          inFlight = undefined
+          if (pendingRescan) {
+            pendingRescan = false
+            void runPass('post-inflight rescan')
+          }
+        })
       inFlight = pass
       return pass
     }

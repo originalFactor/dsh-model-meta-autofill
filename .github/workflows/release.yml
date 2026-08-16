@@ -34,12 +34,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24          # npm >= 11 understands OIDC trusted publishing
           registry-url: 'https://registry.npmjs.org'
-          oidc: true
       - name: Install
         run: npm i --no-fund --no-audit
       - name: Build
         run: npm run build
+      # Actions injects ACTIONS_ID_TOKEN_REQUEST_* when the job has
+      # id-token: write; the npm CLI exchanges them for a short-lived token.
       - name: Publish to npm
         run: npm publish

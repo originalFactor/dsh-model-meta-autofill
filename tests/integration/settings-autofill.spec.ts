@@ -209,4 +209,83 @@ describe('integration: settings auto-fill', () => {
     await autoFiber.dispose()
     await settingsFiber.dispose()
   })
+
+  it('refills a model whose metadata was stripped after the initial fill (delete-then-refill)', async () => {
+    const ctx = new Context()
+    const settingsFiber = ctx.plugin(MemorySettings, {})
+    await settingsFiber
+    const scope = ctx.settings.register(NS, sectionSchema)
+    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
+    await autoFiber
+
+    // Initial fill of a bare model.
+    await scope.update({
+      providers: {
+        gateway: {
+          api: 'openai-completions', baseURL: 'https://gw.example/v1',
+          models: [{ id: 'deepseek-v4-flash' }],
+        },
+      },
+    })
+    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
+    assert.equal(gatewayModels(ctx)[0]!.contextWindow, 1_000_000)
+
+    // User strips the metadata (leaves only id + compat, as if re-added bare).
+    await scope.update({
+      providers: {
+        gateway: {
+          api: 'openai-completions', baseURL: 'https://gw.example/v1',
+          models: [{ id: 'deepseek-v4-flash', compat: {} }],
+        },
+      },
+    })
+    // Immediately after the strip the fields are gone.
+    assert.equal(gatewayModels(ctx)[0]?.contextWindow, undefined)
+
+    // The watcher must refill them.
+    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
+    assert.equal(gatewayModels(ctx)[0]!.contextWindow, 1_000_000)
+    assert.equal(gatewayModels(ctx)[0]!.maxTokens, 384_000)
+    assert.equal(gatewayModels(ctx)[0]!.name, 'DeepSeek V4 Flash')
+
+    await autoFiber.dispose()
+    await settingsFiber.dispose()
+  })
+
+  it('does not lose the refill when delete and re-add land back-to-back (inflight coalescing rescan)', async () => {
+    const ctx = new Context()
+    const settingsFiber = ctx.plugin(MemorySettings, {})
+    await settingsFiber
+    const scope = ctx.settings.register(NS, sectionSchema)
+    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
+    await autoFiber
+
+    await scope.update({
+      providers: {
+        gateway: {
+          api: 'openai-completions', baseURL: 'https://gw.example/v1',
+          models: [{ id: 'deepseek-v4-flash' }],
+        },
+      },
+    })
+    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
+
+    // Fire delete and re-add back-to-back WITHOUT awaiting the watcher pass in
+    // between: the second commit lands while the first pass is still in flight,
+    // so the coalescing logic must remember it and rescan after settling.
+    await scope.update({
+      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [] } },
+    })
+    await scope.update({
+      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
+    })
+
+    // The re-added bare entry must still get filled once the rescan runs.
+    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
+    assert.equal(gatewayModels(ctx)[0]!.contextWindow, 1_000_000)
+    assert.equal(gatewayModels(ctx)[0]!.maxTokens, 384_000)
+
+    await autoFiber.dispose()
+    await settingsFiber.dispose()
+  })
 })
