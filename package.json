@@ -1,6 +1,6 @@
 {
   "name": "dsh-model-meta-autofill",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "DSH plugin: auto-fill metadata (context length, output cap, display name, input modalities) for custom-provider models from the Model Metadata Registry (models.dev).",
   "keywords": [
     "dsh-plugin",

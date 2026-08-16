@@ -64,6 +64,7 @@ dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径>
 - 每个自定义供应商一张卡片，**点头部可折叠/展开**，带「N 个模型 / 已匹配 M」标签；
 - 卡片内每个模型一行：模型 id（等宽字体）· 当前配置 · models.dev 目录值（随开关实时预览显示名）·「填充」按钮；
 - 目录没有该模型 → 按钮置灰显示「无匹配」；填充未匹配会明确提示「models.dev 没有匹配到：<id>」；写入失败显示宿主返回的具体原因（含孤儿锁提示）。
+- 卡片底部**「获取网关模型」**区块：拉取网关自身的模型列表（见下），勾选后一键添加到该供应商；新加的裸 id 会被自动填充接管。
 
 
 同一能力也开放为 HTTP 端点（本机回环，可直接 curl / 浏览器 console 调用）：
@@ -74,6 +75,8 @@ dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径>
 | `/model-meta-autofill/api/models` | GET | 全部供应商 + 模型的匹配状态与目录值 |
 | `/model-meta-autofill/api/apply` | POST | `{provider, modelId, overwrite?, nameStyle?}` 单模型换用目录值；返回 `{ok:true, applied}` 或 `{ok:false, reason:'no-match'\|...}` |
 | `/model-meta-autofill/api/apply-all` | POST | `{nameStyle?}` 全部覆盖（一个补丁覆盖所有已匹配模型）；返回 `{ok, filled, missed}` |
+| `/model-meta-autofill/api/discover` | POST | `{provider, url?}` 拉取网关模型列表。缺省 URL 启发式：baseURL 以 `/v1` 结尾则追加 `/models`，否则追加 `/v1/models`；可传 `url` 完全覆盖（指向任意返回 `{data/models/results:[...]}` 或顶层数组的清单）。宿主侧解析路由的 `apiKeyEnv` 凭证随请求发送，值不到达浏览器；返回 `{ok, url, count, models:[{id, name?, catalog?}]}` |
+| `/model-meta-autofill/api/discover/add` | POST | `{provider, modelIds}` 把发现的模型追加到该供应商的 `models` 列表（已配置的自动跳过）；返回 `{ok, added}` |
 
 ## 配置
 
@@ -119,7 +122,8 @@ pnpm build                # tsc -p tsconfig.build.json + scripts/copy-data.mjs �
 
 ## 局限
 
-- 目标设置区固定为 `llm-pi-ai`（自定义供应商）。模型发现（`discoverModels`）仍归 llm-pi-ai 自身所有，本插件不做发现。
+- 目标设置区固定为 `llm-pi-ai`（自定义供应商）。
+- 「获取网关模型」走的是网关的 OpenAI 兼容 `/models` 清单接口（可用覆盖 URL 指向任意兼容清单），与 llm-pi-ai 自带的协议级模型发现（`discoverModels`）是两条独立通路。
 - 只填目录里有据可查的字段；目录条目缺容量时不下发任何猜测值。
 - 补丁按「缺失才填」生成，用户的既有值（含 `modelOverrides`）始终优先。
 

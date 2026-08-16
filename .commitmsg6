@@ -1,0 +1,14 @@
+release: 0.3.0 — gateway model discovery
+
+New feature: per-provider gateway model discovery in the settings section.
+Each custom provider card gains a 'Get gateway models' block that pulls the
+gateway's own model listing (OpenAI-compatible /models; override URL supported
+for any compatible listing), joins each discovered id with the models.dev
+catalog, and adds selected models to the route (already-configured skipped).
+Credentials resolve host-side from the route apiKeyEnv and never reach the
+browser.
+
+- /model-meta-autofill/api/discover + /discover/add endpoints
+- client.ts discover panel (URL override, select-all-new, add-selected)
+- pendingRescan fixes the rapid delete+re-add refill race
+- README: discovery docs; 50 tests green
