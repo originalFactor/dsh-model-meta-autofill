@@ -29,6 +29,7 @@
       "@deepseek-ai/dsh-brand": ["../../../deepseek-harness/packages/util/brand"],
       "@deepseek-ai/dsh-invariants": ["../../../deepseek-harness/packages/runtime-diagnostics/invariants"],
       "@deepseek-ai/dsh-host-webserver": ["../../../deepseek-harness/packages/host/webserver"],
+      "@deepseek-ai/dsh-credentials": ["../../../deepseek-harness/packages/credentials/credentials"],
       "@deepseek-ai/dsh-llm-pi-ai": ["../../../deepseek-harness/packages/llm/llm-pi-ai"],
       "@deepseek-ai/dsh-settings-file": ["../../../deepseek-harness/packages/settings/settings-file"]
     }

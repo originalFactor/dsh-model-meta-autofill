@@ -31,6 +31,8 @@ import type { Context } from '@deepseek-ai/cordis'
 import { settingsNamespace, type SettingsNamespace } from '@deepseek-ai/dsh-settings'
 // Type-only import: the Context.webServer augmentation ships with this package.
 import type {} from '@deepseek-ai/dsh-host-webserver'
+// Credential branding for the discovery endpoint's host-side resolution.
+import { credentialRef, type CredentialRef } from '@deepseek-ai/dsh-credentials'
 import {
   applyAll, applyModelsAdd, applyRow, catalogView, defaultModelsUrl, listRows,
   parseModelsPayload, readJsonBody, sendJson, type NameStyle,
@@ -149,7 +151,9 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
 
   // Web surface: plugin-owned HTTP endpoints the settings-section client (and
   // any local caller) uses. Only mounts when the web profile provides the web
-  // server — headless boots simply never activate it.
+  // server — headless boots simply never activate it. credentials is resolved
+  // lazily per request via ctx.get (returns undefined when absent) so the web
+  // API still mounts on boots without a credential service.
   ctx.inject(['settings', 'webServer'], (sctx) => {
     const section = (): LlmPiAiSection | undefined =>
       sctx.settings.get(NS) as LlmPiAiSection | undefined
@@ -253,12 +257,22 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
               const baseURL = typeof profile.baseURL === 'string' ? profile.baseURL : undefined
               const url = typeof body?.url === 'string' && body.url !== '' ? body.url : defaultModelsUrl(baseURL)
               const apiKeyEnv = typeof profile.apiKeyEnv === 'string' ? profile.apiKeyEnv : undefined
-              // Resolve the credential on the host; the value never reaches the client.
+              // Resolve the credential on the host; the value never reaches the
+              // client. ctx.get returns undefined when no credential service is
+              // mounted, so discovery degrades to an unauthenticated request.
               let apiKey: string | undefined
               if (apiKeyEnv !== undefined) {
-                const credentials = (sctx as unknown as { credentials?: { resolve: (ref: string) => Promise<{ value?: string } | undefined> } }).credentials
-                const hit = credentials !== undefined ? await credentials.resolve(apiKeyEnv) : undefined
-                apiKey = typeof hit?.value === 'string' && hit.value !== '' ? hit.value : undefined
+                const credentials = sctx.get('credentials') as
+                  | { resolve: (ref: CredentialRef) => Promise<{ value?: string } | undefined> }
+                  | undefined
+                if (credentials !== undefined) {
+                  let ref: CredentialRef | undefined
+                  try { ref = credentialRef(apiKeyEnv) } catch { /* not a shell identifier — proceed keyless */ }
+                  if (ref !== undefined) {
+                    const hit = await credentials.resolve(ref)
+                    apiKey = typeof hit?.value === 'string' && hit.value !== '' ? hit.value : undefined
+                  }
+                }
               }
               const controller = new AbortController()
               const timer = setTimeout(() => controller.abort(new Error('discovery timed out')), config.timeoutMs)

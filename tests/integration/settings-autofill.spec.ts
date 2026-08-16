@@ -288,4 +288,121 @@ describe('integration: settings auto-fill', () => {
     await autoFiber.dispose()
     await settingsFiber.dispose()
   })
+
+  describe('integration: gateway model discovery', () => {
+    it('resolves the route credential host-side and sends it as an Authorization header', async () => {
+      const { createServer } = await import('node:http')
+      // Fake gateway that records the Authorization header it receives.
+      let seenAuth: string | undefined
+      const gw = createServer((req, res) => {
+        seenAuth = req.headers.authorization ?? 'NO-HEADER'
+        res.writeHead(200, { 'content-type': 'application/json' })
+        res.end(JSON.stringify({ data: [{ id: 'kimi-k3' }] }))
+      })
+      await new Promise<void>((resolve) => { gw.listen(0, '127.0.0.1', () => resolve()) })
+      const gwPort = (gw.address() as { port: number }).port
+
+      const ctx = new Context()
+      // Fake webServer capturing registered routes so the test can drive them.
+      const routes = new Map<string, { handler: (req: unknown, res: unknown) => void | Promise<void> }>()
+      ctx.provide('webServer', {
+        register: (route: { path: string; handler: (req: unknown, res: unknown) => void | Promise<void> }) => {
+          routes.set(route.path, route); return () => undefined
+        },
+      })
+      // Fake credential service resolving the route's apiKeyEnv reference.
+      ctx.provide('credentials', {
+        resolve: async (ref: string) => ref === 'QAA_KEY' ? { value: 'sk-secret-test', source: 'env' } : undefined,
+      })
+      const settingsFiber = ctx.plugin(MemorySettings, {})
+      await settingsFiber
+      const scope = ctx.settings.register(NS, sectionSchema)
+      await scope.update({
+        providers: {
+          gateway: {
+            apiKeyEnv: 'QAA_KEY', api: 'openai-completions',
+            baseURL: 'http://127.0.0.1:' + gwPort + '/v1', models: [],
+          },
+        },
+      })
+      const autoFiber = ctx.plugin(applyAutofill, CONFIG)
+      await autoFiber
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      const mockRes = () => {
+        const out = { status: 0, body: '' }
+        return { out, writeHead: (s: number) => { out.status = s }, end: (b: string) => { out.body = b } }
+      }
+      const mockReq = (body?: unknown) => ({
+        async *[Symbol.asyncIterator]() { if (body !== undefined) yield Buffer.from(JSON.stringify(body)) },
+      })
+      const res = mockRes()
+      await routes.get('/model-meta-autofill/api/discover')!.handler(mockReq({ provider: 'gateway' }), res)
+      const parsed = JSON.parse(res.out.body) as { ok: boolean; count?: number; models?: { id: string }[] }
+
+      assert.equal(parsed.ok, true)
+      assert.equal(parsed.count, 1)
+      assert.equal(parsed.models?.[0]?.id, 'kimi-k3')
+      // The resolved credential reached the gateway as a Bearer token.
+      assert.equal(seenAuth, 'Bearer sk-secret-test')
+
+      gw.close()
+      await autoFiber.dispose()
+      await settingsFiber.dispose()
+    })
+
+    it('skips the Authorization header when no credential service is mounted', async () => {
+      const { createServer } = await import('node:http')
+      let seenAuth: string | undefined
+      const gw = createServer((req, res) => {
+        seenAuth = req.headers.authorization ?? 'NO-HEADER'
+        res.writeHead(200, { 'content-type': 'application/json' })
+        res.end(JSON.stringify({ data: [] }))
+      })
+      await new Promise<void>((resolve) => { gw.listen(0, '127.0.0.1', () => resolve()) })
+      const gwPort = (gw.address() as { port: number }).port
+
+      const ctx = new Context()
+      const routes = new Map<string, { handler: (req: unknown, res: unknown) => void | Promise<void> }>()
+      ctx.provide('webServer', {
+        register: (route: { path: string; handler: (req: unknown, res: unknown) => void | Promise<void> }) => {
+          routes.set(route.path, route); return () => undefined
+        },
+      })
+      // No credentials service provided here.
+      const settingsFiber = ctx.plugin(MemorySettings, {})
+      await settingsFiber
+      const scope = ctx.settings.register(NS, sectionSchema)
+      await scope.update({
+        providers: {
+          gateway: {
+            apiKeyEnv: 'QAA_KEY', api: 'openai-completions',
+            baseURL: 'http://127.0.0.1:' + gwPort + '/v1', models: [],
+          },
+        },
+      })
+      const autoFiber = ctx.plugin(applyAutofill, CONFIG)
+      await autoFiber
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      const mockRes = () => {
+        const out = { status: 0, body: '' }
+        return { out, writeHead: (s: number) => { out.status = s }, end: (b: string) => { out.body = b } }
+      }
+      const mockReq = (body?: unknown) => ({
+        async *[Symbol.asyncIterator]() { if (body !== undefined) yield Buffer.from(JSON.stringify(body)) },
+      })
+      const res = mockRes()
+      await routes.get('/model-meta-autofill/api/discover')!.handler(mockReq({ provider: 'gateway' }), res)
+      const parsed = JSON.parse(res.out.body) as { ok: boolean }
+
+      assert.equal(parsed.ok, true)
+      // Without a credential service the request went out unauthenticated.
+      assert.equal(seenAuth, 'NO-HEADER')
+
+      gw.close()
+      await autoFiber.dispose()
+      await settingsFiber.dispose()
+    })
+  })
 })
