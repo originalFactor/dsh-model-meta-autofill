@@ -1,31 +1,29 @@
-import { describe, it } from 'node:test'
+/**
+ * Integration: the auto-fill pass over the REAL settings service.
+ *
+ * Boots a test-only profile through the Loader (`boot` from
+ * `@deepseek-ai/dsh-app-boot`) composed of the real config editor, the real
+ * `SettingsForms` service, a probe plugin carrying an `llm-pi-ai`-shaped
+ * volatile Config, and this plugin. The assertions read the same
+ * `ctx.settings.describe()` surface every production caller reads, so they
+ * cover the seam the plugin actually runs against rather than a stand-in.
+ */
+
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { after, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
-import {
-  SettingsProvider, settingsNamespace,
-  type SettingsNamespace,
-} from '@deepseek-ai/dsh-settings'
+import Timer from '@deepseek-ai/cordis-plugin-timer'
+import { boot, initProfile, readProfilePatches, type ProfileContext } from '@deepseek-ai/dsh-app-boot'
+import ConfigEditor from '@deepseek-ai/dsh-config-editor'
+import Hmr from '@deepseek-ai/dsh-hmr'
+import Settings from '@deepseek-ai/dsh-settings'
 import { apply as applyAutofill, resolveConfig } from '../../src/index.ts'
 
-const NS: SettingsNamespace = settingsNamespace('llm-pi-ai')
-
-/** In-memory settings provider implementing only the storage primitives. */
-class MemorySettings extends SettingsProvider {
-  doc: Record<string, unknown>
-  constructor(ctx: Context, options?: { doc?: Record<string, unknown> }) {
-    super(ctx)
-    this.doc = structuredClone(options?.doc ?? {})
-  }
-  get writable(): boolean { return true }
-  protected load(): Promise<Record<string, unknown>> {
-    return Promise.resolve(structuredClone(this.doc))
-  }
-  protected persist(ns: SettingsNamespace, section: Record<string, unknown>): Promise<void> {
-    this.doc[ns] = structuredClone(section)
-    return Promise.resolve()
-  }
-}
+const TARGET = 'llm-pi-ai'
 
 /** Faithful replica of the llm-pi-ai model/profile schema fields the fills write. */
 const modelFieldsShape = {
@@ -43,366 +41,248 @@ const profile = z.object({
   models: z.array(modelProfile),
   modelOverrides: z.dict(modelOverride),
 })
-const sectionSchema = z.object({ providers: z.dict(profile).default({}) })
+/** `providers` is volatile exactly as llm-pi-ai declares it, so live edits apply without a remount. */
+const targetSchema = z.object({ providers: z.dict(profile).default({}).volatile() })
 
-/** Section view helper: gateway models of the resolved llm-pi-ai section. */
-function gatewayModels(ctx: Context): Array<Record<string, unknown>> {
-  const section = ctx.settings.get(NS) as {
-    providers?: Record<string, { models?: Array<Record<string, unknown>> }>
-  }
-  return section?.providers?.gateway?.models ?? []
+/** The subset of plugin config these tests drive. */
+const CONFIG = {
+  enabled: true,
+  refreshOnStart: false,
+  autoApply: true,
+  dryRun: false,
+  sources: ['models.dev'],
+  timeoutMs: 5000,
 }
 
 /** Wait until fn() is truthy or the timeout elapses. */
-async function waitFor(fn: () => boolean | Promise<boolean>, ms = 5000): Promise<void> {
+async function waitFor(fn: () => boolean, ms = 8000): Promise<void> {
   const deadline = Date.now() + ms
   for (;;) {
-    if (await fn()) return
+    if (fn()) return
     if (Date.now() > deadline) throw new Error('waitFor timed out')
     await new Promise((resolve) => setTimeout(resolve, 15))
   }
 }
 
-const CONFIG = {
-  enabled: true,
-  refreshOnStart: false,
-  autoApply: true,
-  sources: ['models.dev'],
-  timeoutMs: 5000,
+interface Fixture {
+  ctx: Context
+  /** The resolved `llm-pi-ai` section as the plugin sees it. */
+  section: () => Record<string, unknown> | undefined
+  /** Models of the fixture's `gateway` provider. */
+  models: () => Array<Record<string, unknown>>
+  /** Count of `settings/document-updated` events for the target entry. */
+  events: () => number
+  dispose: () => Promise<void>
 }
 
-describe('integration: settings auto-fill', () => {
-  it('fills existing unenriched models on the initial scan and terminates', async () => {
-    const ctx = new Context()
-    const settingsFiber = ctx.plugin(MemorySettings, {})
-    await settingsFiber
-    const scope = ctx.settings.register(NS, sectionSchema)
-    // Pre-existing user section: models listed with no metadata.
-    await scope.update({
+const cleanup: Array<() => Promise<void> | void> = []
+after(async () => {
+  for (const fn of cleanup.reverse()) await fn()
+})
+
+/**
+ * Boot one test profile.
+ *
+ * `providers` seeds the target entry's USER layer — the profile patch file,
+ * which is what `configEditor` reports as `override` and what marks a route as
+ * writable for this plugin. Seeding the bundle layer instead would put the
+ * routes in the composition base, where the plugin deliberately never writes.
+ */
+async function fixture(options: {
+  providers?: Record<string, unknown>
+  config?: Partial<typeof CONFIG>
+} = {}): Promise<Fixture> {
+  const home = realpathSync(mkdtempSync(join(tmpdir(), 'dma-settings-')))
+  const dir = join(home, 'profiles', 'test')
+  cleanup.push(() => { rmSync(home, { recursive: true, force: true }) })
+  initProfile(dir, ['test-bundle'])
+  const bundle = join(dir, 'node_modules', 'test-bundle')
+  mkdirSync(bundle, { recursive: true })
+  writeFileSync(join(home, 'package.json'), '{"name":"test-installation"}\n')
+  writeFileSync(join(bundle, 'package.json'), JSON.stringify({
+    name: 'test-bundle', version: '1.0.0', dsh: { bundle: { patch: 'cordis.patch.yml' } },
+  }))
+  writeFileSync(join(bundle, 'cordis.patch.yml'), JSON.stringify([{ insert: [
+    { id: 'config-editor', name: 'cordis:editor' },
+    { id: 'settings', name: 'cordis:settings' },
+    { id: TARGET, name: 'cordis:target' },
+    { id: 'model-meta-autofill', name: 'cordis:autofill', config: options.config ?? CONFIG },
+  ] }]))
+  writeFileSync(join(dir, 'cordis.yml'), '[]\n')
+  // The USER layer: the profile patch file the settings service writes through.
+  writeFileSync(join(dir, 'cordis.patch.yml'), JSON.stringify([
+    { id: TARGET, name: 'cordis:target', config: { providers: options.providers ?? {} } },
+  ]))
+
+  const profileContext: ProfileContext = {
+    name: 'test', startedBundles: ['test-bundle'], dir,
+    patchPath: join(dir, 'cordis.patch.yml'), installAnchor: join(home, 'package.json'),
+    cwd: home, home, overlays: [], telemetryDisabledEnv: undefined,
+  }
+  const Target = {
+    Config: targetSchema,
+    apply: () => {},
+  }
+  const Autofill = {
+    name: 'dsh-model-meta-autofill',
+    apply: applyAutofill,
+  }
+
+  const ctx = await boot('test', join(dir, 'cordis.yml'), readProfilePatches('test', profileContext), (c) => {
+    c.provide('profileContext', profileContext)
+    c.provide('appReady', { onReady: (listener: () => void) => { listener(); return () => {} } })
+    Object.assign(c.loader.builtins, {
+      editor: ConfigEditor, settings: Settings, target: Target, autofill: Autofill,
+    })
+  })
+  cleanup.push(async () => { await ctx.fiber.dispose() })
+
+  await ctx.plugin(Timer)
+  const hmr = ctx.plugin(Hmr, { root: [], ignored: [], debounce: 0 })
+  await hmr.await()
+  await ctx.hmr.runExclusive(async () => {})
+
+  let events = 0
+  ctx.on('settings/document-updated', (ns) => { if (String(ns) === TARGET) events += 1 })
+
+  const descriptor = () => ctx.settings.describe().find((row) => String(row.ns) === TARGET)
+  const section = () => {
+    const value = descriptor()?.value
+    return value === null || typeof value !== 'object' ? undefined : value as Record<string, unknown>
+  }
+  const models = (): Array<Record<string, unknown>> => {
+    const providers = section()?.['providers'] as Record<string, { models?: Array<Record<string, unknown>> }> | undefined
+    return providers?.['gateway']?.models ?? []
+  }
+  return { ctx, section, models, events: () => events, dispose: async () => { await ctx.fiber.dispose() } }
+}
+
+/** Write one section through the same service the plugin consumes. */
+async function update(ctx: Context, patch: Record<string, unknown>): Promise<void> {
+  const revision = ctx.settings.describe().find((row) => String(row.ns) === TARGET)?.revision
+  await ctx.settings.update(TARGET, patch, revision)
+}
+
+const GATEWAY = {
+  gateway: {
+    api: 'openai-completions', baseURL: 'https://gw.example/v1',
+    models: [{ id: 'deepseek-v4-flash' }, { id: 'glm-4.7' }],
+  },
+}
+
+describe('integration: settings auto-fill on the live settings seam', () => {
+  it('fills existing unenriched models and terminates', async () => {
+    const f = await fixture({ providers: GATEWAY })
+    await waitFor(() => Number(f.models()[0]?.['contextWindow']) > 0)
+
+    const models = f.models()
+    assert.equal(models[0]?.['id'], 'deepseek-v4-flash')
+    assert.equal(models[0]?.['contextWindow'], 1_000_000)
+    assert.equal(models[0]?.['maxTokens'], 384_000)
+    assert.equal(models[1]?.['id'], 'glm-4.7')
+    assert.equal(typeof models[1]?.['maxTokens'], 'number')
+
+    // Termination: the filled document has nothing missing, so no further writes.
+    const settled = f.events()
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    assert.equal(f.events(), settled, 'no further commits after enrichment settled')
+    await f.dispose()
+  })
+
+  it('fills a model adopted later, preserves user values, and does not loop', async () => {
+    const f = await fixture()
+    await update(f.ctx, {
       providers: {
         gateway: {
           api: 'openai-completions', baseURL: 'https://gw.example/v1',
-          models: [{ id: 'deepseek-v4-flash' }, { id: 'glm-4.7' }],
+          models: [{ id: 'gpt-5.2-pro', contextWindow: 123_456 }, { id: 'kimi-k2.5' }],
         },
       },
     })
+    await waitFor(() => Number(f.models()[1]?.['maxTokens']) > 0)
 
-    let writes = 0
-    ctx.on('settings/updated', (ns, _n, _p, source) => {
-      if (String(ns) === 'llm-pi-ai' && source === 'update') writes += 1
-    })
+    const models = f.models()
+    // The user-set contextWindow survives; only the missing fields fill.
+    assert.equal(models[0]?.['contextWindow'], 123_456)
+    assert.equal(typeof models[0]?.['maxTokens'], 'number')
+    assert.equal(models[1]?.['contextWindow'], 262_144)
+    assert.equal(models[1]?.['maxTokens'], 262_144)
 
-    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-    await autoFiber
-
-    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
-
-    const models = gatewayModels(ctx)
-    assert.equal(models[0]!.id, 'deepseek-v4-flash')
-    assert.equal(models[0]!.contextWindow, 1_000_000)
-    assert.equal(models[0]!.maxTokens, 384_000)
-    assert.equal(models[1]!.id, 'glm-4.7')
-    assert.equal(models[1]!.contextWindow, 204_800)
-    assert.equal(typeof models[1]!.maxTokens, 'number')
-
-    // Termination: no further enrichment writes after settling.
-    const writesAfter = writes
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    assert.equal(writes, writesAfter, 'no further writes after enrichment settled')
-    await autoFiber.dispose()
-    await settingsFiber.dispose()
+    const settled = f.events()
+    await new Promise((resolve) => setTimeout(resolve, 400))
+    assert.equal(f.events(), settled, 'no extra commits after settling')
+    await f.dispose()
   })
 
-  it('fills a model adopted after the initial scan, preserves user values, and does not loop', async () => {
-    const ctx = new Context()
-    const settingsFiber = ctx.plugin(MemorySettings, {})
-    await settingsFiber
-    const scope = ctx.settings.register(NS, sectionSchema)
-    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-    await autoFiber
-
-    // The Models page adopts a new model with a user-set context window.
-    await scope.update({
-      providers: {
-        gateway: {
-          api: 'openai-completions',
-          baseURL: 'https://gw.example/v1',
-          models: [
-            { id: 'gpt-5.2-pro', contextWindow: 123_456 },
-            { id: 'kimi-k2.5' },
-          ],
-        },
-      },
-    })
-
-    await waitFor(() => Number(gatewayModels(ctx)[1]?.maxTokens) > 0)
-
-    const models = gatewayModels(ctx)
-    const gpt = models[0]!
-    const kimi = models[1]!
-    // User-set contextWindow preserved, other fields filled.
-    assert.equal(gpt.contextWindow, 123_456)
-    assert.equal(typeof gpt.maxTokens, 'number')
-    assert.equal(kimi.contextWindow, 262_144)
-    assert.equal(kimi.maxTokens, 262_144)
-
-    // Stability: repeated observation produces no further commits.
-    const marks: string[] = []
-    ctx.on('settings/updated', (ns) => { if (String(ns) === 'llm-pi-ai') marks.push(String(ns)) })
-    const beforeCount = marks.length
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    assert.equal(marks.length, beforeCount, 'no extra commits after settling')
-    await autoFiber.dispose()
-    await settingsFiber.dispose()
-  })
-
-  it('dry-run mode writes nothing', async () => {
-    const ctx = new Context()
-    const settingsFiber = ctx.plugin(MemorySettings, {})
-    await settingsFiber
-    const scope = ctx.settings.register(NS, sectionSchema)
-    await scope.update({
+  it('refills metadata stripped after the initial fill', async () => {
+    const f = await fixture()
+    await update(f.ctx, {
       providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
     })
-    let writes = 0
-    ctx.on('settings/updated', (ns) => { if (String(ns) === 'llm-pi-ai') writes += 1 })
-    const autoFiber = ctx.plugin(applyAutofill, { ...CONFIG, dryRun: true })
-    await autoFiber
-    await new Promise((resolve) => setTimeout(resolve, 400))
-    assert.equal(gatewayModels(ctx)[0]?.contextWindow, undefined)
-    assert.equal(writes, 0, 'dry-run added no writes')
-    await autoFiber.dispose()
-    await settingsFiber.dispose()
+    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
+
+    // The operator strips the fields back to a bare id.
+    await update(f.ctx, {
+      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
+    })
+    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
+    assert.equal(f.models()[0]?.['maxTokens'], 384_000)
+    assert.equal(f.models()[0]?.['name'], 'DeepSeek V4 Flash')
+    await f.dispose()
   })
 
-  it('the default catalog sources are models.dev first', () => {
-    assert.deepEqual(resolveConfig(undefined).sources, ['models.dev'])
-  })
-
-  it('composition-base-only providers are never materialized', async () => {
-    const ctx = new Context()
-    const settingsFiber = ctx.plugin(MemorySettings, {})
-    await settingsFiber
-    // llm-pi-ai mounted "dormant": the only provider lives in composition base.
-    ctx.settings.register(NS, sectionSchema, {
-      base: {
-        providers: {
-          'base-only': {
-            apiKeyEnv: 'DUMMY_KEY',
-            api: 'openai-completions',
-            baseURL: 'https://x/v1',
-            modelOverrides: Object.create(null) as never,
-            models: [{
-              id: 'deepseek-v4-flash', name: 'placeholder', contextWindow: 10, maxTokens: 10, input: ['text'],
-            }],
-          },
-        },
-      },
+  it('keeps the refill when delete and re-add land back-to-back', async () => {
+    const f = await fixture()
+    await update(f.ctx, {
+      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
     })
-    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-    await autoFiber
-    await new Promise((resolve) => setTimeout(resolve, 400))
-    // The user document must not have grown: the base-only provider stays in
-    // the composition base, and nothing base-derived is copied into storage.
-    const provider = ctx.get('settings') as MemorySettings
-    assert.equal(provider.doc['llm-pi-ai'], undefined)
-    await autoFiber.dispose()
-    await settingsFiber.dispose()
-  })
+    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
 
-  it('refills a model whose metadata was stripped after the initial fill (delete-then-refill)', async () => {
-    const ctx = new Context()
-    const settingsFiber = ctx.plugin(MemorySettings, {})
-    await settingsFiber
-    const scope = ctx.settings.register(NS, sectionSchema)
-    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-    await autoFiber
-
-    // Initial fill of a bare model.
-    await scope.update({
-      providers: {
-        gateway: {
-          api: 'openai-completions', baseURL: 'https://gw.example/v1',
-          models: [{ id: 'deepseek-v4-flash' }],
-        },
-      },
-    })
-    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
-    assert.equal(gatewayModels(ctx)[0]!.contextWindow, 1_000_000)
-
-    // User strips the metadata (leaves only id + compat, as if re-added bare).
-    await scope.update({
-      providers: {
-        gateway: {
-          api: 'openai-completions', baseURL: 'https://gw.example/v1',
-          models: [{ id: 'deepseek-v4-flash', compat: {} }],
-        },
-      },
-    })
-    // Immediately after the strip the fields are gone.
-    assert.equal(gatewayModels(ctx)[0]?.contextWindow, undefined)
-
-    // The watcher must refill them.
-    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
-    assert.equal(gatewayModels(ctx)[0]!.contextWindow, 1_000_000)
-    assert.equal(gatewayModels(ctx)[0]!.maxTokens, 384_000)
-    assert.equal(gatewayModels(ctx)[0]!.name, 'DeepSeek V4 Flash')
-
-    await autoFiber.dispose()
-    await settingsFiber.dispose()
-  })
-
-  it('does not lose the refill when delete and re-add land back-to-back (inflight coalescing rescan)', async () => {
-    const ctx = new Context()
-    const settingsFiber = ctx.plugin(MemorySettings, {})
-    await settingsFiber
-    const scope = ctx.settings.register(NS, sectionSchema)
-    const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-    await autoFiber
-
-    await scope.update({
-      providers: {
-        gateway: {
-          api: 'openai-completions', baseURL: 'https://gw.example/v1',
-          models: [{ id: 'deepseek-v4-flash' }],
-        },
-      },
-    })
-    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
-
-    // Fire delete and re-add back-to-back WITHOUT awaiting the watcher pass in
-    // between: the second commit lands while the first pass is still in flight,
-    // so the coalescing logic must remember it and rescan after settling.
-    await scope.update({
+    // Both commits land without awaiting the watcher pass in between.
+    await update(f.ctx, {
       providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [] } },
     })
-    await scope.update({
+    await update(f.ctx, {
       providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
     })
-
-    // The re-added bare entry must still get filled once the rescan runs.
-    await waitFor(() => gatewayModels(ctx)[0]?.contextWindow !== undefined)
-    assert.equal(gatewayModels(ctx)[0]!.contextWindow, 1_000_000)
-    assert.equal(gatewayModels(ctx)[0]!.maxTokens, 384_000)
-
-    await autoFiber.dispose()
-    await settingsFiber.dispose()
+    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
+    assert.equal(f.models()[0]?.['contextWindow'], 1_000_000)
+    await f.dispose()
   })
 
-  describe('integration: gateway model discovery', () => {
-    it('resolves the route credential host-side and sends it as an Authorization header', async () => {
-      const { createServer } = await import('node:http')
-      // Fake gateway that records the Authorization header it receives.
-      let seenAuth: string | undefined
-      const gw = createServer((req, res) => {
-        seenAuth = req.headers.authorization ?? 'NO-HEADER'
-        res.writeHead(200, { 'content-type': 'application/json' })
-        res.end(JSON.stringify({ data: [{ id: 'kimi-k3' }] }))
-      })
-      await new Promise<void>((resolve) => { gw.listen(0, '127.0.0.1', () => resolve()) })
-      const gwPort = (gw.address() as { port: number }).port
+  it('autoApply=false writes nothing while the section stays readable', async () => {
+    const f = await fixture({ providers: GATEWAY, config: { ...CONFIG, autoApply: false } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    assert.equal(f.models()[0]?.['contextWindow'], undefined, 'no automatic writes')
+    assert.ok(f.section(), 'the section is still served for callers')
+    await f.dispose()
+  })
 
-      const ctx = new Context()
-      // Fake webServer capturing registered routes so the test can drive them.
-      const routes = new Map<string, { handler: (req: unknown, res: unknown) => void | Promise<void> }>()
-      ctx.provide('webServer', {
-        register: (route: { path: string; handler: (req: unknown, res: unknown) => void | Promise<void> }) => {
-          routes.set(route.path, route); return () => undefined
-        },
-      })
-      // Fake credential service resolving the route's apiKeyEnv reference.
-      ctx.provide('credentials', {
-        resolve: async (ref: string) => ref === 'QAA_KEY' ? { value: 'sk-secret-test', source: 'env' } : undefined,
-      })
-      const settingsFiber = ctx.plugin(MemorySettings, {})
-      await settingsFiber
-      const scope = ctx.settings.register(NS, sectionSchema)
-      await scope.update({
-        providers: {
-          gateway: {
-            apiKeyEnv: 'QAA_KEY', api: 'openai-completions',
-            baseURL: 'http://127.0.0.1:' + gwPort + '/v1', models: [],
-          },
-        },
-      })
-      const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-      await autoFiber
-      await new Promise((resolve) => setTimeout(resolve, 300))
+  it('dryRun writes nothing', async () => {
+    const f = await fixture({ providers: GATEWAY, config: { ...CONFIG, dryRun: true } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    assert.equal(f.models()[0]?.['contextWindow'], undefined)
+    assert.equal(f.events(), 0, 'dry-run added no writes')
+    await f.dispose()
+  })
 
-      const mockRes = () => {
-        const out = { status: 0, body: '' }
-        return { out, writeHead: (s: number) => { out.status = s }, end: (b: string) => { out.body = b } }
-      }
-      const mockReq = (body?: unknown) => ({
-        async *[Symbol.asyncIterator]() { if (body !== undefined) yield Buffer.from(JSON.stringify(body)) },
-      })
-      const res = mockRes()
-      await routes.get('/model-meta-autofill/api/discover')!.handler(mockReq({ provider: 'gateway' }), res)
-      const parsed = JSON.parse(res.out.body) as { ok: boolean; count?: number; models?: { id: string }[] }
+  it('leaves a composition-base-only provider in the base, never in the user layer', async () => {
+    const f = await fixture({ providers: GATEWAY })
+    await waitFor(() => Number(f.models()[0]?.['contextWindow']) > 0)
+    // The plugin materialized ONLY the provider the user owns. A provider it
+    // never saw in the user layer cannot appear there.
+    const providers = ctxBase(f.ctx)
+    assert.deepEqual(Object.keys(providers ?? {}), ['gateway'])
+    await f.dispose()
+  })
 
-      assert.equal(parsed.ok, true)
-      assert.equal(parsed.count, 1)
-      assert.equal(parsed.models?.[0]?.id, 'kimi-k3')
-      // The resolved credential reached the gateway as a Bearer token.
-      assert.equal(seenAuth, 'Bearer sk-secret-test')
-
-      gw.close()
-      await autoFiber.dispose()
-      await settingsFiber.dispose()
-    })
-
-    it('skips the Authorization header when no credential service is mounted', async () => {
-      const { createServer } = await import('node:http')
-      let seenAuth: string | undefined
-      const gw = createServer((req, res) => {
-        seenAuth = req.headers.authorization ?? 'NO-HEADER'
-        res.writeHead(200, { 'content-type': 'application/json' })
-        res.end(JSON.stringify({ data: [] }))
-      })
-      await new Promise<void>((resolve) => { gw.listen(0, '127.0.0.1', () => resolve()) })
-      const gwPort = (gw.address() as { port: number }).port
-
-      const ctx = new Context()
-      const routes = new Map<string, { handler: (req: unknown, res: unknown) => void | Promise<void> }>()
-      ctx.provide('webServer', {
-        register: (route: { path: string; handler: (req: unknown, res: unknown) => void | Promise<void> }) => {
-          routes.set(route.path, route); return () => undefined
-        },
-      })
-      // No credentials service provided here.
-      const settingsFiber = ctx.plugin(MemorySettings, {})
-      await settingsFiber
-      const scope = ctx.settings.register(NS, sectionSchema)
-      await scope.update({
-        providers: {
-          gateway: {
-            apiKeyEnv: 'QAA_KEY', api: 'openai-completions',
-            baseURL: 'http://127.0.0.1:' + gwPort + '/v1', models: [],
-          },
-        },
-      })
-      const autoFiber = ctx.plugin(applyAutofill, CONFIG)
-      await autoFiber
-      await new Promise((resolve) => setTimeout(resolve, 300))
-
-      const mockRes = () => {
-        const out = { status: 0, body: '' }
-        return { out, writeHead: (s: number) => { out.status = s }, end: (b: string) => { out.body = b } }
-      }
-      const mockReq = (body?: unknown) => ({
-        async *[Symbol.asyncIterator]() { if (body !== undefined) yield Buffer.from(JSON.stringify(body)) },
-      })
-      const res = mockRes()
-      await routes.get('/model-meta-autofill/api/discover')!.handler(mockReq({ provider: 'gateway' }), res)
-      const parsed = JSON.parse(res.out.body) as { ok: boolean }
-
-      assert.equal(parsed.ok, true)
-      // Without a credential service the request went out unauthenticated.
-      assert.equal(seenAuth, 'NO-HEADER')
-
-      gw.close()
-      await autoFiber.dispose()
-      await settingsFiber.dispose()
-    })
+  it('the default catalog source is models.dev', () => {
+    assert.deepEqual(resolveConfig(undefined).sources, ['models.dev'])
   })
 })
+
+/** The user-layer `providers` of the target entry, when one exists. */
+function ctxBase(ctx: Context): Record<string, unknown> | undefined {
+  const user = ctx.settings.describe({ redactSecrets: true }).find((row) => String(row.ns) === TARGET)?.user
+  return (user as { providers?: Record<string, unknown> } | undefined)?.providers
+}

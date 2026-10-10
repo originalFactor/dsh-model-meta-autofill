@@ -21,7 +21,7 @@
  * @module dsh-model-meta-autofill/enrich
  */
 
-import { deepEqualJson } from '@deepseek-ai/dsh-settings'
+import { deepEqualJson } from '@deepseek-ai/dsh-util-values'
 import type { LookedUpEntry } from './dataset.ts'
 
 /** The llm-pi-ai model profile fields this plugin may fill. */

@@ -30,9 +30,9 @@ dsh plugin --profile web add dsh-model-meta-autofill
 或从源码安装（本地构建）：
 
 ```bash
-pnpm install          # 依赖解析需要 ../deepseek-harness checkout（见「开发」）
+pnpm install          # 开发依赖全部来自 npm 发布版（见「开发」）
 pnpm build            # 生成 lib/（含打包的 lib/data/*.json）
-npm pack              # 产出 tarball
+pnpm pack             # 产出 tarball
 dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径>
 ```
 
@@ -87,8 +87,8 @@ dsh plugin --profile web add dsh-model-meta-autofill@<tarball路径>
 | `refreshOnStart` | boolean | `true` | 启动时拉取一次实时目录 |
 | `refreshIntervalMs` | number | `0` | >0 时按此间隔定时刷新（毫秒） |
 | `timeoutMs` | number | `15000` | 单次拉取超时 |
-| `autoApply` | boolean | `true` | 是否把补丁写入设置区（关掉则插件只提供 `ctx.modelMeta` 查询） |
-| `dryRun` | boolean | `false` | 试运行：只记录将补填的条目，不写设置（配合日志观察） |
+| `autoApply` | boolean | `true` | 是否自动把补丁写入设置区（关掉则不自动写；`ctx.modelMeta` 与插件 Web API 仍可用于手动填充） |
+| `dryRun` | boolean | `false` | 试运行：只记录将补填的条目，不写设置（配合日志观察）。仅在 `autoApply` 为真时有意义 |
 | `fillName` | boolean | `true` | 补显示名 |
 | `fillInput` | boolean | `true` | 补输入模态（`text`，视觉模型再加 `image`） |
 | `fillReasoning` | boolean | `false` | 保留；当前恒为 false |
@@ -110,15 +110,25 @@ pnpm build         # 重新打包
 
 ## 开发
 
-所有开发期依赖（`@deepseek-ai/cordis`、`dsh-settings`、`dsh-host-webserver`、`dsh-credentials` 等）都从 npm 安装的发布版本解析，`npm i` 即可，无需 DeepSeek Harness 源码 checkout。
+所有开发期依赖（`@deepseek-ai/cordis`、`dsh-settings`、`dsh-util-values`、`dsh-host-webserver`、`dsh-credentials` 等）都从 npm 安装的发布版本解析，无需 DeepSeek Harness 源码 checkout。
+
+宿主侧 API 由 Harness 提供，因此 `peerDependencies` 声明了可用的最低版本：
+
+| peer | 最低版本 | 原因 |
+| --- | --- | --- |
+| `@deepseek-ai/dsh-settings` | `0.1.7-alpha.1` | 该版本起 `ctx.settings` 是 `SettingsForms`（`describe`/`update`/`replace`/`mutate`）。更早的版本走已删除的 `SettingsProvider` seam（`settingsNamespace()` / `settings/updated` / `settings.get()`），本插件不再支持 |
+| `@deepseek-ai/dsh-util-values` | `0.1.7-alpha.1` | `deepEqualJson` 已从 `dsh-settings` 迁到这里 |
+| `@deepseek-ai/cordis` | `^4.0.0` | `ctx.inject` / `ctx.effect` / `Service` |
 
 ```bash
 pnpm typecheck            # tsc -p tsconfig.json（src + tests）
-pnpm test                 # node 内置测试器 + tsx：dataset / enrich / api / 集成（真实 SettingsProvider）
-pnpm build                # tsc -p tsconfig.build.json + scripts/copy-data.mjs → lib/
+pnpm test                 # node 内置测试器 + tsx：dataset / enrich / api / 集成（真实 SettingsForms + Loader）
+pnpm build                # tsc -p tsconfig.build.json + tsc -p tsconfig.client.json + scripts/copy-data.mjs → lib/
 ```
 
-集成测试（`tests/integration/settings-autofill.spec.ts`）用内存版 `SettingsProvider`（与 dsh 设置实现的加载/持久化接口一致）验证：初始扫描补填、事后采纳补填、用户值保留、幂等终止、dry-run 零写入、base-only provider 不被物化。
+集成测试（`tests/integration/settings-autofill.spec.ts`）通过 `@deepseek-ai/dsh-app-boot` 的 `boot()` 起一个真实 profile（真 `ConfigEditor` + 真 `SettingsForms` + 一个 `llm-pi-ai` 形状的 volatile Config 探针插件），断言读取的就是生产调用方读的 `ctx.settings.describe()`，覆盖：初始扫描补填、事后采纳补填、用户值保留、幂等终止、dry-run / `autoApply:false` 零写入、base-only provider 不被物化。
+
+> 注意设置事件的事务语义：`settings/document-updated` 是在 `describe()` 内部发出的，而 `describe()` 又被配置编辑器在 HMR 独占事务中调用。因此在本事件里直接写回会与写者自身的事务嵌套并报 `HMR transactions cannot be nested`；插件在挂载时捕获一个 `AsyncResource`，所有补填都经它启动，从而始终运行在事务之外。
 
 ## 局限
 

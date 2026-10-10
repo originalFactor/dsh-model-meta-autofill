@@ -27,8 +27,10 @@
  * @module dsh-model-meta-autofill
  */
 
+import { AsyncResource } from 'node:async_hooks'
 import type { Context } from '@deepseek-ai/cordis'
-import { settingsNamespace, type SettingsNamespace } from '@deepseek-ai/dsh-settings'
+// Type-only: the Context.settings augmentation and the descriptor view it returns.
+import type { SettingsDescriptor } from '@deepseek-ai/dsh-settings'
 // Type-only import: the Context.webServer augmentation ships with this package.
 import type {} from '@deepseek-ai/dsh-host-webserver'
 // Credential branding for the discovery endpoint's host-side resolution.
@@ -80,18 +82,58 @@ export {
 
 export const name = 'dsh-model-meta-autofill'
 
-const NS: SettingsNamespace = settingsNamespace(TARGET_NAMESPACE)
-
-/** How hard the initial scan retries waiting for the llm-pi-ai namespace to register. */
+/**
+ * How hard the initial scan retries waiting for the llm-pi-ai namespace to
+ * appear in the settings service.
+ */
 const INITIAL_SCAN_MAX_ATTEMPTS = 12
 const INITIAL_SCAN_BACKOFF_MS = 250
+
+/**
+ * The slice of the `settings` service this plugin consumes. The service is a
+ * read/write seam over profile patch entries: `describe()` projects every
+ * active entry's resolved value, and `update()` merges a patch into the user
+ * layer of one entry, fenced by the revision the caller last read.
+ */
+interface SettingsLike {
+  describe(options?: { redactSecrets?: boolean }): SettingsDescriptor[]
+  update(ns: string, patch: object, expectedRevision?: number): Promise<void>
+}
+
+/** The llm-pi-ai entry's descriptor, or undefined while its owner is not active. */
+function descriptorOf(settings: SettingsLike): SettingsDescriptor | undefined {
+  try {
+    return settings.describe().find((entry) => String(entry.ns) === TARGET_NAMESPACE)
+  } catch (error) {
+    // A describe() that throws (no profile yet, torn-down editor) means "not
+    // served yet": callers retry or do nothing rather than failing the boot.
+    // The service is a live seam, so its availability genuinely varies.
+    void error
+    return undefined
+  }
+}
+
+/** The resolved `llm-pi-ai` section, or undefined while it is not served. */
+function sectionOf(settings: SettingsLike): LlmPiAiSection | undefined {
+  const value = descriptorOf(settings)?.value
+  return value === null || typeof value !== 'object' ? undefined : value as LlmPiAiSection
+}
+
+/**
+ * Persist one section patch, fenced by the revision currently read. A
+ * concurrent write (the Models page, another plugin) makes the service refuse
+ * with a conflict rather than let this plugin's stale read win.
+ */
+async function updateSection(settings: SettingsLike, patch: Record<string, unknown>): Promise<void> {
+  await settings.update(TARGET_NAMESPACE, patch, descriptorOf(settings)?.revision)
+}
 
 /**
  * The provider routes present in the user's own settings layer. Without an
  * authoritative user view nothing is reported — an empty set keeps
  * composition-base-only providers from ever being materialized.
  */
-export function userProviderIdsOf(sctx: { settings: { describe(options: { redactSecrets: boolean }): Array<{ ns: unknown; user?: unknown }> } }): ReadonlySet<string> {
+export function userProviderIdsOf(sctx: { settings: SettingsLike }): ReadonlySet<string> {
   try {
     const descriptor = sctx.settings.describe({ redactSecrets: true })
       .find((entry) => String(entry.ns) === TARGET_NAMESPACE)
@@ -155,8 +197,8 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
   // lazily per request via ctx.get (returns undefined when absent) so the web
   // API still mounts on boots without a credential service.
   ctx.inject(['settings', 'webServer'], (sctx) => {
-    const section = (): LlmPiAiSection | undefined =>
-      sctx.settings.get(NS) as LlmPiAiSection | undefined
+    const settings: SettingsLike = sctx.settings
+    const section = (): LlmPiAiSection | undefined => sectionOf(settings)
     const lookupIndex = (id: string): LookedUpEntry | undefined => index.lookup(id)
     sctx.effect(() => {
       const disposers = [
@@ -194,7 +236,7 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
                 return
               }
               try {
-                await sctx.settings.update(NS, result.patch)
+                await updateSection(settings, result.patch)
               } catch (firstError) {
                 // One retry over a FRESH snapshot: the usual transient cause
                 // is a concurrent write (the auto-fill pass, the Models page)
@@ -205,7 +247,7 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
                 )
                 const retry = applyRow(section(), lookupIndex, userProviderIdsOf(sctx), provider, modelId, overwrite, nameStyle)
                 if (!retry.ok || retry.patch === undefined) throw firstError
-                await sctx.settings.update(NS, retry.patch)
+                await updateSection(settings, retry.patch)
               }
               sendJson(res, 200, { ok: true, applied: result.applied })
             } catch (error) {
@@ -232,7 +274,7 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
                 sendJson(res, 200, { ok: true, filled: [], missed: result.missed })
                 return
               }
-              await sctx.settings.update(NS, result.patch)
+              await updateSection(settings, result.patch)
               sendJson(res, 200, { ok: true, filled: result.filled, missed: result.missed })
             } catch (error) {
               ctx.logger.warn('dsh-model-meta-autofill: apply-all failed: %s', String(error))
@@ -318,7 +360,7 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
               const result = applyModelsAdd(section(), userProviderIdsOf(sctx), provider, modelIds)
               if (!result.ok) { sendJson(res, 200, { ok: false, reason: result.reason, provider }); return }
               if (result.patch === undefined) { sendJson(res, 200, { ok: true, added: [], provider }); return }
-              await sctx.settings.update(NS, result.patch)
+              await updateSection(settings, result.patch)
               sendJson(res, 200, { ok: true, added: result.added ?? [], provider })
             } catch (error) {
               ctx.logger.warn('dsh-model-meta-autofill: discover/add failed: %s', String(error))
@@ -372,22 +414,40 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
 
   // The auto-fill pass. Declared inside ctx.inject so the plugin does not
   // demand a settings service at mount: on headless boots without one, the
-  // enrichment simply never activates.
-  ctx.inject(['settings'], (sctx) => {
+  // enrichment simply never activates. `autoApply: false` keeps the service
+  // and the web API (both caller-driven) while suppressing this watcher, so
+  // nothing is written unless a caller asks.
+  if (!config.autoApply) {
+    ctx.logger.info('dsh-model-meta-autofill: autoApply is off — no automatic writes; ctx.modelMeta and the web API remain available')
+  }
+  if (config.autoApply) ctx.inject(['settings'], (sctx) => {
+    const settings: SettingsLike = sctx.settings
     let inFlight: Promise<void> | undefined
     let attempts = 0
-    // Set while a pass is in flight when a settings/updated event lands; the
+    // Set while a pass is in flight when a settings change lands; the
     // finishing pass then re-runs once. Without this, a "delete + re-add" pair
-    // of quick consecutive writes can lose the second event (the pass for the
+    // of quick consecutive writes can lose the second change (the pass for the
     // first is still flying) and leave the re-added entry unfilled.
     let pendingRescan = false
+
+    // `settings/document-updated` is emitted from inside `describe()`, which
+    // the settings service calls from within the config editor's write and
+    // therefore inside HMR's exclusive transaction. Writing back on that event
+    // in the emitting context would re-enter `hmr.runExclusive` and be refused
+    // with "HMR transactions cannot be nested". This resource is captured once,
+    // at mount (outside every transaction), so a pass started through it always
+    // runs in a transaction-free context — including its continuations after
+    // awaits. Node's AsyncLocalStorage carries the store through timers and
+    // microtasks, so no other escape (a bare setTimeout, queueMicrotask, or
+    // setImmediate created in the store) would work.
+    const passScope = new AsyncResource('dsh-model-meta-autofill')
 
     const userProviderIds = (): ReadonlySet<string> => userProviderIdsOf(sctx)
 
     const runPass = (reason: string): Promise<void> => {
       if (inFlight !== undefined) {
-        // Don't drop the event: remember it so the in-flight pass re-scans
-        // when it settles. Coalesce repeated events into one rescan.
+        // Don't drop the change: remember it so the in-flight pass re-scans
+        // when it settles. Coalesce repeated changes into one rescan.
         pendingRescan = true
         ctx.logger.debug('dsh-model-meta-autofill: deferring pass (%s): %s', reason, IN_FLIGHT_SKIP_REASON)
         return inFlight
@@ -395,9 +455,7 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
       const pass = (async (): Promise<void> => {
         try {
           await ensureBundled()
-          const section = sctx.settings.get(NS) as
-            | { providers?: Record<string, never> }
-            | undefined
+          const section = sectionOf(settings)
           if (section === undefined) return
           const userIds = userProviderIds()
           const patch = buildSectionPatch(section, (id) => index.lookup(id), enrichOptions, userIds)
@@ -416,11 +474,11 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
             missing.length,
             describeMissing(missing),
           )
-          await sctx.settings.update(NS, patch)
+          await updateSection(settings, patch)
           ctx.logger.info('dsh-model-meta-autofill: settings updated — the llm-pi-ai adapter will serve the filled metadata')
         } catch (error) {
-          // A refused settings write (schema/validate) must not wedge the
-          // watcher: log and let the next change retry.
+          // A refused settings write (schema/validate/conflict) must not wedge
+          // the watcher: log and let the next change retry.
           ctx.logger.warn('dsh-model-meta-autofill: enrichment pass failed: %s', String(error))
         }
       })()
@@ -435,7 +493,16 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
       return pass
     }
 
-    // Keep the initial scan retrying until the llm-pi-ai namespace exists.
+    /**
+     * Start a pass outside HMR's transaction. Every trigger routes through
+     * here: `settings/document-updated` fires inside the writer's transaction,
+     * so a pass started directly from the listener would nest transactions.
+     */
+    const startPass = (reason: string): void => {
+      passScope.runInAsyncScope(() => { void runPass(reason) })
+    }
+
+    // Keep the initial scan retrying until the llm-pi-ai entry is served.
     // Plain timers whose handles are cleared on the fiber's disposal.
     let retryHandle: ReturnType<typeof setTimeout> | undefined
     sctx.effect(() => () => {
@@ -445,21 +512,22 @@ export function apply(ctx: Context, rawConfig?: Partial<Config>): void {
       const attempt = (): void => {
         if (attempts >= INITIAL_SCAN_MAX_ATTEMPTS) return
         attempts += 1
-        const section = sctx.settings.get(NS)
-        if (section === undefined) {
+        if (descriptorOf(settings) === undefined) {
           retryHandle = setTimeout(attempt, INITIAL_SCAN_BACKOFF_MS * Math.min(attempts, 8))
           return
         }
-        void runPass('initial scan')
+        startPass('initial scan')
       }
       retryHandle = setTimeout(attempt, 0)
     }
     scheduleInitialScan()
 
-    sctx.on('settings/updated', (ns, _next, _prev) => {
+    sctx.on('settings/document-updated', (ns) => {
       if (String(ns) !== TARGET_NAMESPACE) return
-      // The pass reads the authoritative value itself; event payload is advisory.
-      void runPass('settings changed')
+      // The pass reads the authoritative value itself; the event payload is
+      // advisory, and its revision arrives before this plugin's own write is
+      // reflected, so the pass re-reads rather than trusting it.
+      startPass('settings changed')
     })
   })
 }

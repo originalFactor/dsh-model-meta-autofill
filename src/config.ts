@@ -52,10 +52,13 @@ export interface Config {
    */
   refreshIntervalMs: number
   /**
-   * Persist the enrichment into the `llm-pi-ai` user settings section.
-   * This is the "auto-fill" behavior: models already listed (or adopted from
-   * a discovery interrogation) receive contextWindow/maxTokens/name/input
-   * automatically. Set false to only expose `ctx.modelMeta` for manual use.
+   * Persist the enrichment into the `llm-pi-ai` user settings section
+   * automatically. This is the "auto-fill" behavior: models already listed (or
+   * adopted from a discovery interrogation) receive
+   * contextWindow/maxTokens/name/input on the initial scan and on every later
+   * change to that section. Set false to suppress every automatic write — the
+   * `ctx.modelMeta` service and the plugin's web API stay available for
+   * caller-driven fills.
    * Default true.
    */
   autoApply: boolean
@@ -97,7 +100,7 @@ export function resolveConfig(raw: Partial<Config> | undefined): Config {
     throw new Error(`dsh-model-meta-autofill: invalid config: ${(error as Error).message}`)
   }
   if (!Array.isArray(checked.sources) || checked.sources.length === 0) {
-    throw new Error('dsh-model-meta-autofill: sources must name at least one PublicProviderConf catalog')
+    throw new Error('dsh-model-meta-autofill: sources must name at least one catalog (models.dev, a PublicProviderConf dist id, or an http(s) URL)')
   }
   return checked
 }
