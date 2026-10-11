@@ -15,9 +15,8 @@
         refreshOnStart: true
         refreshIntervalMs: 0
         timeoutMs: 15000
-        # Persist the enrichment into the llm-pi-ai settings section.
-        autoApply: true
-        dryRun: false
+        # Catalog metadata is filled into the models an endpoint advertises,
+        # so adopted rows arrive complete. This plugin writes no settings.
         fillName: true
         fillInput: true
         fillReasoning: false

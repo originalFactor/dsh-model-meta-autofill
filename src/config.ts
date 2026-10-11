@@ -51,19 +51,6 @@ export interface Config {
    * 0 disables repeating. Default 0 (fetch once, then offline).
    */
   refreshIntervalMs: number
-  /**
-   * Persist the enrichment into the `llm-pi-ai` user settings section
-   * automatically. This is the "auto-fill" behavior: models already listed (or
-   * adopted from a discovery interrogation) receive
-   * contextWindow/maxTokens/name/input on the initial scan and on every later
-   * change to that section. Set false to suppress every automatic write — the
-   * `ctx.modelMeta` service and the plugin's web API stay available for
-   * caller-driven fills.
-   * Default true.
-   */
-  autoApply: boolean
-  /** Only log what would be filled, never write settings. Default false. */
-  dryRun: boolean
   /** Fill the display name when the catalog carries a prettier one. Default true. */
   fillName: boolean
   /** Fill input modalities (adds 'image' for vision-capable models). Default true. */
@@ -82,8 +69,6 @@ const configSchema = z.object({
   timeoutMs: z.number().step(1).min(1000).default(15000),
   refreshOnStart: z.boolean().default(true),
   refreshIntervalMs: z.number().step(1).min(0).default(0),
-  autoApply: z.boolean().default(true),
-  dryRun: z.boolean().default(false),
   fillName: z.boolean().default(true),
   fillInput: z.boolean().default(true),
   fillReasoning: z.boolean().default(false),

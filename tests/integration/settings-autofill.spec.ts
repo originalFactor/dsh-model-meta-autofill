@@ -1,12 +1,13 @@
 /**
- * Integration: the auto-fill pass over the REAL settings service.
+ * Integration: the discovery seam over the REAL settings service.
  *
  * Boots a test-only profile through the Loader (`boot` from
  * `@deepseek-ai/dsh-app-boot`) composed of the real config editor, the real
  * `SettingsForms` service, a probe plugin carrying an `llm-pi-ai`-shaped
- * volatile Config, and this plugin. The assertions read the same
- * `ctx.settings.describe()` surface every production caller reads, so they
- * cover the seam the plugin actually runs against rather than a stand-in.
+ * volatile Config, and this plugin. The setup mirrors production: the plugin
+ * reaches discovery through the `llm` service seam, and its describing wrap is
+ * driven exactly as the Models page drives it — by calling `discoverModels` and
+ * adopting the answer.
  */
 
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
@@ -21,6 +22,7 @@ import { boot, initProfile, readProfilePatches, type ProfileContext } from '@dee
 import ConfigEditor from '@deepseek-ai/dsh-config-editor'
 import Hmr from '@deepseek-ai/dsh-hmr'
 import Settings from '@deepseek-ai/dsh-settings'
+import LlmRuntime, { type LlmDiscoveredModel } from '@deepseek-ai/dsh-llm'
 import { apply as applyAutofill, resolveConfig } from '../../src/index.ts'
 
 const TARGET = 'llm-pi-ai'
@@ -48,31 +50,73 @@ const targetSchema = z.object({ providers: z.dict(profile).default({}).volatile(
 const CONFIG = {
   enabled: true,
   refreshOnStart: false,
-  autoApply: true,
-  dryRun: false,
   sources: ['models.dev'],
   timeoutMs: 5000,
 }
 
-/** Wait until fn() is truthy or the timeout elapses. */
-async function waitFor(fn: () => boolean, ms = 8000): Promise<void> {
-  const deadline = Date.now() + ms
-  for (;;) {
-    if (fn()) return
-    if (Date.now() > deadline) throw new Error('waitFor timed out')
-    await new Promise((resolve) => setTimeout(resolve, 15))
+/**
+ * The REAL LLM runtime, with `llm-pi-ai`'s discovery registered through the
+ * documented API. A hand-built stand-in cannot cover this seam: the plugin
+ * reaches the service through the Cordis context, and only the real runtime
+ * proves the wrap is installed on the instance the `@Remote` adapter calls
+ * `this.discoverModels` on. A stand-in that recorded calls on a plain object
+ * passed while the live page received undescribed rows.
+ */
+class FakeLlm {
+  /** Models the registered discovery discloses, in endpoint order. */
+  candidates: readonly LlmDiscoveredModel[] = []
+  failure: Error | undefined
+  /** How many times the registered discovery has run. */
+  asks = 0
+  /** Set by the fixture once the runtime is mounted. */
+  runtime: LlmRuntime | undefined
+
+  /**
+   * Register this stand-in's answer as the `llm-pi-ai` discovery.
+   * @param ctx - the booted context carrying the real runtime.
+   */
+  install(ctx: Context): void {
+    ctx.llm.registerModelDiscovery(TARGET, async () => {
+      this.asks += 1
+      if (this.failure !== undefined) throw this.failure
+      return [...this.candidates]
+    })
   }
 }
 
 interface Fixture {
   ctx: Context
+  /** The stand-in whose discovery the real LLM runtime serves. */
+  llm: FakeLlm
   /** The resolved `llm-pi-ai` section as the plugin sees it. */
   section: () => Record<string, unknown> | undefined
   /** Models of the fixture's `gateway` provider. */
   models: () => Array<Record<string, unknown>>
   /** Count of `settings/document-updated` events for the target entry. */
   events: () => number
+  /**
+   * Interrogate the endpoint the way the Models page does, returning what the
+   * caller would adopt.
+   * @param settingsNs - namespace to ask; the plugin describes only `llm-pi-ai`.
+   * @returns the candidates an adopt action receives.
+   */
+  discover: (settingsNs?: string) => Promise<LlmDiscoveredModel[]>
+  /** Call one plugin-owned HTTP route through its registered handler. */
+  call: (path: string, body: unknown) => Promise<{ status: number; payload: Record<string, unknown> }>
   dispose: () => Promise<void>
+}
+
+/**
+ * Minimal stand-in for the host web server: it records the routes a plugin
+ * registers and lets a test drive one handler directly. Exercising the real
+ * route is what proves the button's endpoint actually writes settings.
+ */
+class FakeWebServer {
+  readonly routes = new Map<string, (req: unknown, res: unknown) => void | Promise<void>>()
+  register(route: { path: string; handler: (req: unknown, res: unknown) => void | Promise<void> }): () => void {
+    this.routes.set(route.path, route.handler)
+    return () => { this.routes.delete(route.path) }
+  }
 }
 
 const cleanup: Array<() => Promise<void> | void> = []
@@ -127,10 +171,11 @@ async function fixture(options: {
     name: 'dsh-model-meta-autofill',
     apply: applyAutofill,
   }
-
+  const webServer = new FakeWebServer()
   const ctx = await boot('test', join(dir, 'cordis.yml'), readProfilePatches('test', profileContext), (c) => {
     c.provide('profileContext', profileContext)
     c.provide('appReady', { onReady: (listener: () => void) => { listener(); return () => {} } })
+    c.provide('webServer', webServer)
     Object.assign(c.loader.builtins, {
       editor: ConfigEditor, settings: Settings, target: Target, autofill: Autofill,
     })
@@ -138,6 +183,13 @@ async function fixture(options: {
   cleanup.push(async () => { await ctx.fiber.dispose() })
 
   await ctx.plugin(Timer)
+  // The REAL LLM runtime: the plugin walks the Cordis context to reach it, so
+  // only the real service proves the wrap lands on the instance the Remote
+  // adapter calls into.
+  await ctx.plugin(LlmRuntime)
+  const llm = new FakeLlm()
+  llm.install(ctx)
+
   const hmr = ctx.plugin(Hmr, { root: [], ignored: [], debounce: 0 })
   await hmr.await()
   await ctx.hmr.runExclusive(async () => {})
@@ -154,7 +206,46 @@ async function fixture(options: {
     const providers = section()?.['providers'] as Record<string, { models?: Array<Record<string, unknown>> }> | undefined
     return providers?.['gateway']?.models ?? []
   }
-  return { ctx, section, models, events: () => events, dispose: async () => { await ctx.fiber.dispose() } }
+  return {
+    ctx,
+    llm,
+    section,
+    models,
+    events: () => events,
+    // Through the REAL runtime, exactly as the Models page reaches it — and, on
+    // the path the page actually uses, through the Remote adapter.
+    discover: (settingsNs = TARGET) => ctx.llm.discoverModels(settingsNs, { baseURL: 'https://gw.example/v1' }),
+    call: (path, body) => callRoute(webServer, path, body),
+    dispose: async () => { await ctx.fiber.dispose() },
+  }
+}
+
+/**
+ * Drive one registered plugin route with a synthetic request/response pair.
+ * A path may carry a query string: routes are keyed by pathname alone, and the
+ * full URL is what the handler reads from `req.url`.
+ */
+function callRoute(
+  webServer: FakeWebServer,
+  path: string,
+  body: unknown,
+): Promise<{ status: number; payload: Record<string, unknown> }> {
+  const handler = webServer.routes.get(path.split('?')[0]!)
+  if (handler === undefined) throw new Error(`route not registered: ${path}`)
+  const req = Object.assign(
+    (async function* () { yield Buffer.from(JSON.stringify(body)) })(),
+    { url: path },
+  )
+  let status = 0
+  let text = ''
+  const res = {
+    writeHead: (code: number) => { status = code },
+    end: (chunk: string) => { text = chunk },
+  }
+  return Promise.resolve(handler(req, res)).then(() => ({
+    status,
+    payload: JSON.parse(text) as Record<string, unknown>,
+  }))
 }
 
 /** Write one section through the same service the plugin consumes. */
@@ -169,115 +260,219 @@ const GATEWAY = {
     models: [{ id: 'deepseek-v4-flash' }, { id: 'glm-4.7' }],
   },
 }
+describe('integration: the discovery seam over the live llm service', () => {
+  it('describes the models an endpoint advertises, so adopted rows arrive complete', async () => {
+    const f = await fixture()
+    // What a gateway listing actually discloses: ids and nothing else.
+    f.llm.candidates = [{ id: 'deepseek-v4-flash' }, { id: 'glm-4.7' }]
 
-describe('integration: settings auto-fill on the live settings seam', () => {
-  it('fills existing unenriched models and terminates', async () => {
-    const f = await fixture({ providers: GATEWAY })
-    await waitFor(() => Number(f.models()[0]?.['contextWindow']) > 0)
+    const found = await f.discover()
+    assert.deepEqual(found, [
+      { id: 'deepseek-v4-flash', name: 'DeepSeek V4 Flash', contextWindow: 1_000_000, maxTokens: 384_000, inputModalities: ['text'] },
+      { id: 'glm-4.7', name: 'GLM-4.7', contextWindow: 204_800, maxTokens: 131_072, inputModalities: ['text'] },
+    ])
+    // Adopting them is an ordinary editor edit, so nothing was written here.
+    assert.equal(f.events(), 0, 'describing a discovery writes no settings')
+    await f.dispose()
+  })
+
+  it('adopting the described candidates persists exactly what the catalog said', async () => {
+    const f = await fixture()
+    f.llm.candidates = [{ id: 'deepseek-v4-flash' }]
+    const found = await f.discover()
+
+    // Mirror what ModelListEditor.adopt() does with a candidate: copy the
+    // disclosed fields onto the row, then the card's 保存 commits it.
+    const adopted = found.map((candidate) => ({
+      id: candidate.id,
+      ...candidate.name === undefined ? {} : { name: candidate.name },
+      ...candidate.contextWindow === undefined ? {} : { contextWindow: candidate.contextWindow },
+      ...candidate.maxTokens === undefined ? {} : { maxTokens: candidate.maxTokens },
+      ...candidate.inputModalities === undefined ? {} : { input: [...candidate.inputModalities] },
+    }))
+    await update(f.ctx, { providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: adopted } } })
 
     const models = f.models()
     assert.equal(models[0]?.['id'], 'deepseek-v4-flash')
     assert.equal(models[0]?.['contextWindow'], 1_000_000)
     assert.equal(models[0]?.['maxTokens'], 384_000)
-    assert.equal(models[1]?.['id'], 'glm-4.7')
-    assert.equal(typeof models[1]?.['maxTokens'], 'number')
-
-    // Termination: the filled document has nothing missing, so no further writes.
-    const settled = f.events()
-    await new Promise((resolve) => setTimeout(resolve, 400))
-    assert.equal(f.events(), settled, 'no further commits after enrichment settled')
+    assert.equal(models[0]?.['name'], 'DeepSeek V4 Flash')
     await f.dispose()
   })
 
-  it('fills a model adopted later, preserves user values, and does not loop', async () => {
+  it('leaves a capacity the endpoint disclosed alone', async () => {
+    // The endpoint's own numbers win: this only fills what discovery left open.
     const f = await fixture()
-    await update(f.ctx, {
-      providers: {
-        gateway: {
-          api: 'openai-completions', baseURL: 'https://gw.example/v1',
-          models: [{ id: 'gpt-5.2-pro', contextWindow: 123_456 }, { id: 'kimi-k2.5' }],
-        },
-      },
-    })
-    await waitFor(() => Number(f.models()[1]?.['maxTokens']) > 0)
+    f.llm.candidates = [{ id: 'deepseek-v4-flash', contextWindow: 65_536, name: 'My Gateway Label' }]
 
-    const models = f.models()
-    // The user-set contextWindow survives; only the missing fields fill.
-    assert.equal(models[0]?.['contextWindow'], 123_456)
-    assert.equal(typeof models[0]?.['maxTokens'], 'number')
-    assert.equal(models[1]?.['contextWindow'], 262_144)
-    assert.equal(models[1]?.['maxTokens'], 262_144)
-
-    const settled = f.events()
-    await new Promise((resolve) => setTimeout(resolve, 400))
-    assert.equal(f.events(), settled, 'no extra commits after settling')
+    const [only] = await f.discover()
+    assert.equal(only?.['contextWindow'], 65_536, 'the disclosed window is kept')
+    assert.equal(only?.['name'], 'My Gateway Label', 'the disclosed name is kept')
+    // The fields discovery did not answer for are filled.
+    assert.equal(only?.['maxTokens'], 384_000)
     await f.dispose()
   })
 
-  it('refills metadata stripped after the initial fill', async () => {
+  it('returns a model the catalog does not know untouched, rather than guessing', async () => {
     const f = await fixture()
-    await update(f.ctx, {
-      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
-    })
-    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
+    f.llm.candidates = [{ id: 'my-private-model' }, { id: 'deepseek-v4-flash' }]
 
-    // The operator strips the fields back to a bare id.
-    await update(f.ctx, {
-      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
-    })
-    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
-    assert.equal(f.models()[0]?.['maxTokens'], 384_000)
-    assert.equal(f.models()[0]?.['name'], 'DeepSeek V4 Flash')
+    const found = await f.discover()
+    assert.deepEqual(found[0], { id: 'my-private-model' }, 'no invented metadata')
+    assert.equal(found[1]?.['contextWindow'], 1_000_000)
     await f.dispose()
   })
 
-  it('keeps the refill when delete and re-add land back-to-back', async () => {
+  it('never adds a model the endpoint did not advertise', async () => {
+    // Discovery answers what the endpoint serves; describing those answers must
+    // not smuggle in a catalog entry the endpoint never mentioned.
     const f = await fixture()
-    await update(f.ctx, {
-      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
-    })
-    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
+    f.llm.candidates = [{ id: 'my-private-model' }]
 
-    // Both commits land without awaiting the watcher pass in between.
-    await update(f.ctx, {
-      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [] } },
-    })
-    await update(f.ctx, {
-      providers: { gateway: { api: 'openai-completions', baseURL: 'https://gw.example/v1', models: [{ id: 'deepseek-v4-flash' }] } },
-    })
-    await waitFor(() => f.models()[0]?.['contextWindow'] !== undefined)
-    assert.equal(f.models()[0]?.['contextWindow'], 1_000_000)
+    const found = await f.discover()
+    assert.deepEqual(found.map((model) => model.id), ['my-private-model'])
     await f.dispose()
   })
 
-  it('autoApply=false writes nothing while the section stays readable', async () => {
-    const f = await fixture({ providers: GATEWAY, config: { ...CONFIG, autoApply: false } })
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    assert.equal(f.models()[0]?.['contextWindow'], undefined, 'no automatic writes')
-    assert.ok(f.section(), 'the section is still served for callers')
+  it('describes llm-pi-ai only, leaving another family untouched', async () => {
+    const f = await fixture()
+    // A real runtime needs a discovery registered for the namespace being
+    // asked; this one serves another adapter family.
+    f.ctx.llm.registerModelDiscovery('llm-other', async () => [{ id: 'deepseek-v4-flash' }])
+    f.llm.candidates = [{ id: 'deepseek-v4-flash' }]
+
+    const other = await f.discover('llm-other')
+    assert.deepEqual(other, [{ id: 'deepseek-v4-flash' }], 'another namespace is not ours to size')
     await f.dispose()
   })
 
-  it('dryRun writes nothing', async () => {
-    const f = await fixture({ providers: GATEWAY, config: { ...CONFIG, dryRun: true } })
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    assert.equal(f.models()[0]?.['contextWindow'], undefined)
-    assert.equal(f.events(), 0, 'dry-run added no writes')
+  it('propagates a discovery failure instead of answering with described rows', async () => {
+    const f = await fixture()
+    f.llm.failure = new Error('gateway refused the listing')
+    await assert.rejects(() => f.discover(), /gateway refused the listing/)
     await f.dispose()
   })
 
-  it('leaves a composition-base-only provider in the base, never in the user layer', async () => {
+  it('describes what the REMOTE path returns, which is the one the page uses', async () => {
+    // The browser reaches discovery through the Remote adapter, and that adapter
+    // calls `this.discoverModels` on the service instance. This is the assertion
+    // that pins the wrap to the instance rather than to the context proxy.
+    const f = await fixture()
+    f.llm.candidates = [{ id: 'deepseek-v4-flash' }]
+
+    const found = await f.ctx.llm.remoteDiscoverModels(
+      TARGET,
+      { baseURL: 'https://gw.example/v1' },
+      new AbortController().signal,
+    )
+    assert.equal(found[0]?.['contextWindow'], 1_000_000)
+    assert.equal(found[0]?.['name'], 'DeepSeek V4 Flash')
+    await f.dispose()
+  })
+
+  it('restores discovery on disposal, leaving no shadow on the service', async () => {
+    const f = await fixture()
+    const service = f.ctx.get('llm')
+    assert.ok(service, 'the runtime is mounted')
+    // While mounted the plugin shadows the prototype method with its own.
+    assert.ok(Object.hasOwn(service, 'discoverModels'), 'the wrap is an own property while mounted')
+    await f.dispose()
+    assert.equal(Object.hasOwn(service, 'discoverModels'), false, 'disposal removes the shadow')
+  })
+
+  it('calls through to the registered discovery exactly once', async () => {
+    // A wrap that invoked itself instead of the captured previous method would
+    // either recurse or double-ask the endpoint.
+    const f = await fixture()
+    f.llm.candidates = [{ id: 'deepseek-v4-flash' }]
+    const found = await f.discover()
+    assert.equal(f.llm.asks, 1, 'the registered discovery ran once')
+    assert.equal(found.length, 1)
+    await f.dispose()
+  })
+
+  it('writes nothing on boot, even with a section full of bare model ids', async () => {
+    // The startup scan is gone: a boot that finds unenriched models leaves them
+    // exactly as the user wrote them, and only a discovery describes anything.
     const f = await fixture({ providers: GATEWAY })
-    await waitFor(() => Number(f.models()[0]?.['contextWindow']) > 0)
-    // The plugin materialized ONLY the provider the user owns. A provider it
-    // never saw in the user layer cannot appear there.
-    const providers = ctxBase(f.ctx)
-    assert.deepEqual(Object.keys(providers ?? {}), ['gateway'])
+    await new Promise((resolve) => setTimeout(resolve, 600))
+
+    assert.equal(f.events(), 0, 'no settings write happened at boot')
+    // The resolved view materializes schema defaults (`input: []`), so assert on
+    // the metadata this plugin would have filled rather than on the raw row.
+    for (const model of f.models()) {
+      assert.equal(model['contextWindow'], undefined, 'no capacity was filled')
+      assert.equal(model['maxTokens'], undefined, 'no output cap was filled')
+      assert.equal(model['name'], undefined, 'no display name was filled')
+    }
+    // Only the routes the user declared are in the user layer.
+    assert.deepEqual(Object.keys(ctxBase(f.ctx) ?? {}), ['gateway'])
     await f.dispose()
   })
 
   it('the default catalog source is models.dev', () => {
     assert.deepEqual(resolveConfig(undefined).sources, ['models.dev'])
+  })
+})
+
+describe('integration: the catalog lookup behind the fill controls', () => {
+  it('answers with the fillable values and writes nothing', async () => {
+    // The controls only READ: they put these into the editor's own fields and let
+    // the card's 保存 commit. So after a lookup the user layer must be exactly as
+    // it was — no write, no revision bump, nothing for the open card's 保存 to
+    // conflict with, which is what lets the card stay open and savable.
+    const f = await fixture({ providers: GATEWAY })
+    const before = JSON.stringify(f.section())
+
+    const result = await f.call('/model-meta-autofill/api/catalog?ids=deepseek-v4-flash', undefined)
+    assert.equal(result.status, 200)
+    assert.equal(result.payload['ok'], true)
+    assert.deepEqual(result.payload['models'], {
+      'deepseek-v4-flash': {
+        id: 'deepseek-v4-flash',
+        name: 'DeepSeek V4 Flash',
+        contextWindow: 1_000_000,
+        maxTokens: 384_000,
+        input: ['text'],
+      },
+    })
+    assert.deepEqual(result.payload['unknown'], [])
+
+    assert.equal(JSON.stringify(f.section()), before, 'a lookup must not touch the document')
+    assert.equal(f.events(), 0, 'and must not emit a settings update')
+    await f.dispose()
+  })
+
+  it('answers a whole card in one request, de-duplicated', async () => {
+    // A provider-level fill covers every row, so one round trip is what keeps a
+    // single button press from issuing a request per model.
+    const f = await fixture({ providers: GATEWAY })
+    const result = await f.call(
+      '/model-meta-autofill/api/catalog?ids=deepseek-v4-flash,glm-4.7,deepseek-v4-flash',
+      undefined,
+    )
+    assert.equal(result.status, 200)
+    assert.deepEqual(Object.keys(result.payload['models'] as object).sort(), ['deepseek-v4-flash', 'glm-4.7'])
+    assert.deepEqual(result.payload['unknown'], [])
+    await f.dispose()
+  })
+
+  it('separates models the catalog does not know, and rejects a missing ids list', async () => {
+    const f = await fixture({ providers: GATEWAY })
+    const mixed = await f.call(
+      '/model-meta-autofill/api/catalog?ids=deepseek-v4-flash,not-a-real-model-xyz',
+      undefined,
+    )
+    // 200, because "the catalog does not know this model" is a fact the control
+    // reports to the user, not a server error.
+    assert.equal(mixed.status, 200)
+    assert.deepEqual(Object.keys(mixed.payload['models'] as object), ['deepseek-v4-flash'])
+    assert.deepEqual(mixed.payload['unknown'], ['not-a-real-model-xyz'])
+
+    const noIds = await f.call('/model-meta-autofill/api/catalog', undefined)
+    assert.equal(noIds.status, 400)
+    assert.equal(noIds.payload['reason'], 'ids is required')
+    await f.dispose()
   })
 })
 

@@ -22,6 +22,14 @@ jobs:
         run: npx tsc -p tsconfig.json
       - name: Unit + integration tests
         run: npx tsx --test tests/dataset.spec.ts tests/enrich.spec.ts tests/api.spec.ts tests/integration/settings-autofill.spec.ts
+      # Both of these execute lib/client.js the way the browser does, so they
+      # need a build. The bundle guard catches a classic-script global-scope
+      # leak (which only surfaces on the second evaluation: HMR reload or a
+      # combo); the injection suite drives the DOM attachment.
+      - name: Build (for the client suites)
+        run: npm run build
+      - name: Client bundle + DOM injection
+        run: npx tsx --test tests/client-bundle.spec.ts tests/client-injection.spec.ts
 
   publish:
     needs: test

@@ -1,6 +1,8 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { applyAll, applyRow, displayName, listRows, splitVendorName, type LlmPiAiSection } from '../src/api.ts'
+import {
+  catalogView, catalogViews, displayName, listProviders, splitVendorName, type LlmPiAiSection,
+} from '../src/api.ts'
 
 const meta = {
   known: { id: 'known-model', name: 'Known Model', vendor: 'TestVendor', contextWindow: 100, maxTokens: 50, input: ['text', 'image'] as const },
@@ -21,85 +23,156 @@ const section: LlmPiAiSection = {
       ],
       modelOverrides: { 'partial-model': { maxTokens: 3 } },
     },
+    other: { models: [{ id: 'known-model' }] },
   },
 }
 
-describe('listRows', () => {
-  it('reports matched/unmatched models with catalog and configured snapshots', () => {
-    const rows = listRows(section, lookup, new Set(['gw']))
-    assert.equal(rows.length, 1)
-    const gw = rows[0]!
-    assert.equal(gw.provider, 'gw')
-    assert.equal(gw.userConfigured, true)
-    // 2 list entries + 1 override
-    assert.equal(gw.models.length, 3)
-    const known = gw.models.find(m => m.id === 'known-model')!
-    assert.equal(known.matched, true)
-    assert.equal(known.catalog?.contextWindow, 100)
-    assert.equal(known.configured.contextWindow, 999)
-    const unknown = gw.models.find(m => m.id === 'unknown-model')!
-    assert.equal(unknown.matched, false)
-    assert.equal(unknown.catalog, undefined)
+
+describe('listProviders', () => {
+  it('reports each route with the title and rows its card renders', () => {
+    // The browser half injects into rendered cards, which show only the title,
+    // so this map is what lets it recover the route id a write must name. The
+    // rows are what a card reload compares against to prove the editor really
+    // re-seeded (the page's store lags an external write).
+    const rows: LlmPiAiSection = {
+      providers: {
+        workbuddy: { displayName: 'WorkBuddy', models: [{ id: 'x', name: 'X' }, { id: 'y' }] },
+        gateway: { models: [{ id: 'z' }] },
+      },
+    }
+    assert.deepEqual(listProviders(rows, undefined), [
+      // A row carries its name only when the profile declares one.
+      { provider: 'workbuddy', displayName: 'WorkBuddy', models: [{ id: 'x', name: 'X' }, { id: 'y' }] },
+      // A route with no declared title falls back to its own id, which is what
+      // the card shows in that case.
+      { provider: 'gateway', displayName: 'gateway', models: [{ id: 'z' }] },
+    ])
   })
 
-  it('flags non-user providers and empty section', () => {
-    const rows = listRows(section, lookup, new Set(['other']))
-    assert.equal(rows[0]!.userConfigured, false)
-    assert.deepEqual(listRows(undefined, lookup), [])
+  it('lists only user-layer routes and tolerates an absent section', () => {
+    // Capacities travel with the rows, because a card reload compares the
+    // reopened editor's capacity inputs against them.
+    assert.deepEqual(
+      listProviders(section, new Set(['gw'])),
+      [{
+        provider: 'gw',
+        displayName: 'gw',
+        models: [
+          { id: 'known-model', contextWindow: 999, maxTokens: 7 },
+          { id: 'unknown-model' },
+        ],
+      }],
+    )
+    assert.deepEqual(listProviders(section, new Set(['nobody'])), [])
+    assert.deepEqual(listProviders(undefined, undefined), [])
+  })
+
+  it('carries each row capacity only when the profile declares one', () => {
+    // A reload compares capacities, so an absent one must stay absent rather
+    // than defaulting to a number that would never match the rendered blank.
+    const rows: LlmPiAiSection = {
+      providers: {
+        gw: {
+          models: [
+            { id: 'full', contextWindow: 1_000_000, maxTokens: 384_000 },
+            { id: 'context-only', contextWindow: 128_000 },
+            { id: 'bare' },
+          ],
+        },
+      },
+    }
+    assert.deepEqual(listProviders(rows, undefined), [{
+      provider: 'gw',
+      displayName: 'gw',
+      models: [
+        { id: 'full', contextWindow: 1_000_000, maxTokens: 384_000 },
+        { id: 'context-only', contextWindow: 128_000 },
+        { id: 'bare' },
+      ],
+    }])
+  })
+
+  it('skips rows with no usable id rather than reporting a phantom model', () => {
+    // The reload matches the editor's rows positionally, so a row it cannot
+    // identify must not enter the expectation at all.
+    const malformed: LlmPiAiSection = {
+      providers: { gw: { models: [{ id: '' }, { name: 'no id' } as never, { id: 'real' }] } },
+    }
+    assert.deepEqual(listProviders(malformed, undefined), [
+      { provider: 'gw', displayName: 'gw', models: [{ id: 'real' }] },
+    ])
   })
 })
 
-describe('applyRow', () => {
-  it('overwrite=true switches configured values to the catalog ones', () => {
-    const result = applyRow(section, lookup, new Set(['gw']), 'gw', 'known-model')
-    assert.equal(result.ok, true)
-    assert.equal(result.applied?.name, 'Known Model')
-    assert.equal(result.applied?.contextWindow, 100)
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const models = gw.models as Array<Record<string, unknown>>
-    assert.equal(models.length, 2)
-    const entry = models[0]!
-    assert.equal(entry.contextWindow, 100)
-    assert.equal(entry.maxTokens, 50)
-    assert.deepEqual(entry.input, ['text', 'image'])
-    // untouched fields survive (compat kept), sibling model restated
-    assert.deepEqual(entry.compat, {})
-    assert.equal(models[1]!.id, 'unknown-model')
+describe('catalogView', () => {
+  it('returns exactly the fillable values, with no write and no padding', () => {
+    // The per-model control puts these into the editor's own fields, so a field
+    // the catalog does not know must be ABSENT rather than present-but-empty:
+    // an empty string would clear a value the user had set.
+    assert.deepEqual(catalogView(lookup, 'known-model'), {
+      id: 'known-model',
+      name: 'Known Model',
+      contextWindow: 100,
+      maxTokens: 50,
+      input: ['text', 'image'],
+    })
+    assert.deepEqual(catalogView(lookup, 'partial-model'), { id: 'partial-model', contextWindow: 200 })
   })
 
-  it('overwrite=false fills only missing fields', () => {
-    const result = applyRow(section, lookup, new Set(['gw']), 'gw', 'known-model', false)
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const entry = (gw.models as Array<Record<string, unknown>>)[0]!
-    assert.equal(entry.contextWindow, 999)   // user value preserved
-    assert.equal(entry.maxTokens, 7)          // user value preserved
-    assert.equal(entry.name, 'Known Model')   // missing, now filled
+  it('answers undefined for a model the catalog does not know', () => {
+    assert.equal(catalogView(lookup, 'unknown-model'), undefined)
   })
 
-  it('catalog gaps keep the configured value (never erases)', () => {
-    const result = applyRow(section, lookup, new Set(['gw']), 'gw', 'partial-model')
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const overrides = gw.modelOverrides as Record<string, Record<string, unknown>>
-    const entry = overrides['partial-model']!
-    assert.equal(entry.contextWindow, 200)    // from catalog
-    assert.equal(entry.maxTokens, 3)          // catalog has no output cap
+  it('honors the vendor name style', () => {
+    const vendorMeta = { id: 'v', name: 'OpenAI/GPT-5.2', vendor: 'OpenAI' }
+    assert.equal(catalogView(() => vendorMeta, 'v', 'vendor')?.['name'], 'OpenAI: GPT-5.2')
+    assert.equal(catalogView(() => vendorMeta, 'v', 'bare')?.['name'], 'GPT-5.2')
+  })
+})
+
+describe('catalogViews', () => {
+  it('answers many ids in one pass, keyed by the id asked about', () => {
+    // A provider-level fill covers every row of a card, so this is what keeps it
+    // to ONE round trip instead of a request per model.
+    assert.deepEqual(catalogViews(lookup, ['known-model', 'partial-model']), {
+      ok: true,
+      models: {
+        'known-model': { id: 'known-model', name: 'Known Model', contextWindow: 100, maxTokens: 50, input: ['text', 'image'] },
+        'partial-model': { id: 'partial-model', contextWindow: 200 },
+      },
+      unknown: [],
+    })
   })
 
-  it('reports the precise reason on every failure mode', () => {
-    assert.equal(applyRow(section, lookup, new Set(['other']), 'gw', 'known-model').reason, 'provider-not-configured')
-    assert.equal(applyRow(section, lookup, new Set(['gw']), 'missing-gw', 'known-model').reason, 'provider-not-configured')
-    assert.equal(applyRow(section, lookup, new Set(['ghost']), 'ghost', 'known-model').reason, 'provider-not-found')
-    assert.equal(applyRow(section, lookup, new Set(['gw']), 'gw', 'no-such').reason, 'no-match')
-    assert.equal(applyRow(section, lookup, new Set(['gw']), 'gw', 'partial-model').reason, undefined)
-    assert.equal(applyRow(undefined, lookup, undefined, 'gw', 'known-model').reason, 'provider-not-found')
+  it('separates ids the catalog does not know from the ones it does', () => {
+    // A gap is reported, never filled with a guess.
+    const result = catalogViews(lookup, ['known-model', 'unknown-model'])
+    assert.deepEqual(Object.keys(result.models), ['known-model'])
+    assert.deepEqual(result.unknown, ['unknown-model'])
   })
 
-  it('model-not-found when the route has the model neither listed nor overridden', () => {
-    const noModels: LlmPiAiSection = { providers: { gw: { api: 'x', baseURL: 'y' } } }
-    assert.equal(applyRow(noModels, lookup, new Set(['gw']), 'gw', 'known-model').reason, 'model-not-found')
+  it('de-duplicates ids and skips blanks', () => {
+    // Blanks are unnamed rows, not catalog gaps, and a repeated id must not
+    // become two entries or two "unknown" reports.
+    const result = catalogViews(lookup, ['known-model', 'known-model', '', 'unknown-model', 'unknown-model'])
+    assert.deepEqual(Object.keys(result.models), ['known-model'])
+    assert.deepEqual(result.unknown, ['unknown-model'])
+  })
+
+  it('keeps unknown ids in the order they were asked about', () => {
+    const result = catalogViews(lookup, ['nope-b', 'known-model', 'nope-a'])
+    assert.deepEqual(result.unknown, ['nope-b', 'nope-a'])
+  })
+
+  it('honors the vendor name style', () => {
+    const vendorMeta = { id: 'v', name: 'OpenAI/GPT-5.2', vendor: 'OpenAI' }
+    assert.equal(catalogViews(() => vendorMeta, ['v'], 'vendor').models['v']?.['name'], 'OpenAI: GPT-5.2')
+    assert.equal(catalogViews(() => vendorMeta, ['v'], 'bare').models['v']?.['name'], 'GPT-5.2')
+  })
+
+  it('answers empty lists rather than failing on no ids', () => {
+    assert.deepEqual(catalogViews(lookup, []), { ok: true, models: {}, unknown: [] })
+    assert.deepEqual(catalogViews(lookup, ['', '']), { ok: true, models: {}, unknown: [] })
   })
 })
 
@@ -115,49 +188,5 @@ describe('name formatting', () => {
     assert.equal(displayName(m, 'vendor'), 'OpenAI: GPT-5.2')
     assert.equal(displayName(m, 'bare'), 'GPT-5.2')
     assert.equal(displayName({}, 'vendor'), undefined)
-  })
-})
-
-describe('applyRow nameStyle', () => {
-  it('vendor style writes the prefixed display name', () => {
-    const result = applyRow(section, lookup, new Set(['gw']), 'gw', 'known-model', true, 'vendor')
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const entry = (gw.models as Array<Record<string, unknown>>)[0]!
-    assert.equal(entry.name, 'TestVendor: Known Model')
-    assert.equal(result.applied?.name, 'TestVendor: Known Model')
-  })
-
-  it('bare style strips the prefix', () => {
-    const result = applyRow(section, lookup, new Set(['gw']), 'gw', 'known-model', true, 'bare')
-    assert.equal(result.applied?.name, 'Known Model')
-  })
-})
-
-describe('applyAll', () => {
-  it('builds one patch overwriting every matched model and reports misses', () => {
-    const result = applyAll(section, lookup, new Set(['gw']), 'vendor')
-    assert.equal(result.ok, true)
-    assert.deepEqual(result.filled.map((f) => f.modelId).sort(), ['known-model', 'partial-model'])
-    assert.deepEqual(result.missed.map((m) => m.modelId), ['unknown-model'])
-    const providers = result.patch!.providers as Record<string, unknown>
-    const gw = providers.gw as Record<string, unknown>
-    const models = gw.models as Array<Record<string, unknown>>
-    assert.equal(models.length, 2)
-    const known = models.find((m) => m.id === 'known-model')!
-    assert.equal(known.name, 'TestVendor: Known Model')
-    assert.equal(known.contextWindow, 100)
-    // the unmatched model is restated untouched
-    assert.equal(models.find((m) => m.id === 'unknown-model')!.contextWindow, undefined)
-    // the override entry is patched per key
-    const overrides = gw.modelOverrides as Record<string, Record<string, unknown>>
-    assert.equal(overrides['partial-model']!.contextWindow, 200)
-    assert.equal(overrides['partial-model']!.maxTokens, 3)
-  })
-
-  it('skips providers outside the user layer', () => {
-    const result = applyAll(section, lookup, new Set(['other']))
-    assert.equal(result.patch, undefined)
-    assert.equal(result.filled.length, 0)
   })
 })
