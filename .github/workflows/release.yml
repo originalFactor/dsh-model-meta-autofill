@@ -1,12 +1,13 @@
-name: release
+name: build and test
 
 on:
   push:
+    branches: [main]
     tags: ['v*']
+  pull_request:
 
 permissions:
   contents: read
-  id-token: write   # OIDC — npm trusted publishing (no long-lived token)
 
 jobs:
   test:
@@ -15,13 +16,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Install
-        run: npm i --no-fund --no-audit
+        run: npm i --ignore-scripts --no-fund --no-audit
       - name: Typecheck
         run: npx tsc -p tsconfig.json
       - name: Unit + integration tests
-        run: npx tsx --test tests/dataset.spec.ts tests/enrich.spec.ts tests/api.spec.ts tests/integration/settings-autofill.spec.ts
+        run: npx tsx --test tests/dataset.spec.ts tests/enrich.spec.ts tests/discovery.spec.ts tests/discovery-runtime.spec.ts tests/api.spec.ts tests/integration/settings-autofill.spec.ts
       # Both of these execute lib/client.js the way the browser does, so they
       # need a build. The bundle guard catches a classic-script global-scope
       # leak (which only surfaces on the second evaluation: HMR reload or a
@@ -30,21 +31,10 @@ jobs:
         run: npm run build
       - name: Client bundle + DOM injection
         run: npx tsx --test tests/client-bundle.spec.ts tests/client-injection.spec.ts
-
-  publish:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Pack checked build
+        run: npm pack --ignore-scripts
+      - uses: actions/upload-artifact@v4
         with:
-          node-version: 24          # npm >= 11 understands OIDC trusted publishing
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install
-        run: npm i --no-fund --no-audit
-      - name: Build
-        run: npm run build
-      # Actions injects ACTIONS_ID_TOKEN_REQUEST_* when the job has
-      # id-token: write; the npm CLI exchanges them for a short-lived token.
-      - name: Publish to npm
-        run: npm publish
+          name: dsh-model-meta-autofill
+          path: dsh-model-meta-autofill-*.tgz
+          if-no-files-found: error

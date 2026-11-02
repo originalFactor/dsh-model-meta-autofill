@@ -93,7 +93,9 @@ interface CatalogBatchResponse {
     // Class names are matched fuzzily: CSS modules hash the prefix but keep the
     // authored suffix (`_3nPmjq_rowCard`), so a full name cannot be hardcoded.
     const MARK = 'dmaSync'
-    const CARD_SELECTOR = '[class*="rowCard"]'
+    const CARD_SELECTORS = ['[class*="rowCard"]', '[class*="setupCard"]']
+    const EDITOR_TITLE_SELECTOR = '[class*="editorTitle"]'
+    const EDITOR_ROUTE_SELECTOR = '[class*="editorRoute"]'
     const HEAD_SELECTOR = '[class*="rowHead"]'
     const NAME_SELECTOR = '[class*="rowName"]'
     // The 模型目录 heading line: 恢复默认模型 / 获取可用模型 live here, and this is
@@ -104,14 +106,14 @@ interface CatalogBatchResponse {
     const ENTRY_SELECTOR = '[class*="modelEntry"]'
     const ADVANCED_SELECTOR = '[class*="modelAdvanced"]'
     const INPUT_CHOICES_SELECTOR = '[class*="modelInputChoices"]'
-    // The row's expand control, revealed inside the row's own header.
-    const ROW_TOGGLE_SELECTOR = '[class*="iconButton"]'
-    // Row fields, matched by the labels the app itself renders, so this reads
-    // the host's copy instead of duplicating it.
-    const MODEL_ID_LABEL_PREFIX = '模型 ID'
-    const MODEL_NAME_LABEL_PREFIX = '显示名称'
-    const CONTEXT_WINDOW_LABEL_PREFIX = '上下文窗口'
-    const MAX_TOKENS_LABEL_PREFIX = '最大输出'
+    // Expansion and deletion share iconButton; only expansion has aria-expanded.
+    const ROW_TOGGLE_SELECTOR = 'button[aria-expanded]'
+    // Field labels from ui-settings-models 0.2.1-rc.5 in its English and Chinese locales.
+    // The editor appends the one-based row position.
+    const MODEL_ID_LABEL_PREFIXES = ['Model ID', '模型 ID']
+    const MODEL_NAME_LABEL_PREFIXES = ['Display name', '显示名称']
+    const CONTEXT_WINDOW_LABEL_PREFIXES = ['Context window', '上下文窗口']
+    const MAX_TOKENS_LABEL_PREFIXES = ['Max output tokens', '最大输出']
     /** How long to wait for a React commit before giving up on it. */
     const COMMIT_TIMEOUT_MS = 2000
     /** Poll interval while waiting for a commit; one frame at 60 Hz. */
@@ -176,7 +178,8 @@ interface CatalogBatchResponse {
     function closestCard(node: Element | null): Element | undefined {
       let current: Element | null = node
       while (current !== null) {
-        if (current.matches(CARD_SELECTOR)) return current
+        const candidate = current
+        if (CARD_SELECTORS.some((selector) => candidate.matches(selector))) return candidate
         current = current.parentElement
       }
       return undefined
@@ -270,10 +273,10 @@ interface CatalogBatchResponse {
     }
 
     /** The input inside one row whose label starts with the given text. */
-    function rowInput(entry: Element, prefix: string): HTMLInputElement | undefined {
+    function rowInput(entry: Element, prefixes: readonly string[]): HTMLInputElement | undefined {
       for (const node of Array.from(entry.querySelectorAll('input'))) {
         const label = node.getAttribute('aria-label') ?? ''
-        if (label.startsWith(prefix)) return node as HTMLInputElement
+        if (prefixes.some((prefix) => label.startsWith(prefix))) return node as HTMLInputElement
       }
       return undefined
     }
@@ -289,7 +292,7 @@ interface CatalogBatchResponse {
 
     /** One model row's CURRENT id, read from the input the app labels as such. */
     function modelIdOf(entry: Element): string | undefined {
-      const value = rowInput(entry, MODEL_ID_LABEL_PREFIX)?.value.trim()
+      const value = rowInput(entry, MODEL_ID_LABEL_PREFIXES)?.value.trim()
       return value === undefined || value === '' ? undefined : value
     }
 
@@ -317,9 +320,13 @@ interface CatalogBatchResponse {
       const boxes = Array.from(entry.querySelectorAll('input[type="checkbox"]')) as HTMLInputElement[]
       if (boxes.length === 0) return []
       const changed: string[] = []
-      for (const modality of ['text', 'image'] as const) {
+      // Enable desired types before clearing others: the host disables the last selected type.
+      const order = (['text', 'image'] as const).filter((type) => wanted.includes(type))
+        .concat((['text', 'image'] as const).filter((type) => !wanted.includes(type)))
+      for (const modality of order) {
         const label = modality === 'text' ? '文本' : '图片'
-        const box = boxes.find((node) => node.closest('label')?.textContent?.trim() === label)
+        const labels = modality === 'text' ? ['Text', '文本'] : ['Image', '图片']
+        const box = boxes.find((node) => labels.includes(node.closest('label')?.textContent?.trim() ?? ''))
         if (box === undefined || box.disabled) continue
         const want = wanted.includes(modality)
         if (box.checked === want) continue
@@ -339,15 +346,15 @@ interface CatalogBatchResponse {
     function applyCatalog(entry: Element, data: CatalogView): string[] {
       const filled: string[] = []
       if (data.name !== undefined) {
-        const input = rowInput(entry, MODEL_NAME_LABEL_PREFIX)
+        const input = rowInput(entry, MODEL_NAME_LABEL_PREFIXES)
         if (input !== undefined) { setInputValue(input, data.name); filled.push('显示名称') }
       }
       if (data.contextWindow !== undefined) {
-        const input = rowInput(entry, CONTEXT_WINDOW_LABEL_PREFIX)
+        const input = rowInput(entry, CONTEXT_WINDOW_LABEL_PREFIXES)
         if (input !== undefined) { setInputValue(input, capacityText(data.contextWindow)); filled.push('上下文窗口') }
       }
       if (data.maxTokens !== undefined) {
-        const input = rowInput(entry, MAX_TOKENS_LABEL_PREFIX)
+        const input = rowInput(entry, MAX_TOKENS_LABEL_PREFIXES)
         if (input !== undefined) { setInputValue(input, capacityText(data.maxTokens)); filled.push('最大输出') }
       }
       if (data.input !== undefined) filled.push(...applyInputTypes(entry, data.input))
@@ -527,10 +534,10 @@ interface CatalogBatchResponse {
       return wrapper
     }
 
-    /** The card's visible title, used to find its route id. */
+    /** The saved row or first-run editor's title, used to find its route id. */
     function cardName(card: Element): string | undefined {
       const node = card.querySelector(HEAD_SELECTOR)?.querySelector(NAME_SELECTOR) ?? card.querySelector(NAME_SELECTOR)
-      const text = node?.textContent?.trim()
+      const text = (node ?? card.querySelector(EDITOR_TITLE_SELECTOR))?.textContent?.trim()
       return text === undefined || text === '' ? undefined : text
     }
 
@@ -551,7 +558,6 @@ interface CatalogBatchResponse {
       // A pass that started before these maps existed (the very first one, or the
       // first after a navigation) has no route ids to mount with, so the arrival
       // of the list must schedule the pass that uses it.
-      const cold = byProvider.size === 0
       const attempt = fetch(API + '/providers')
         .then((response) => response.json() as Promise<{ providers?: ProviderIdentityView[] }>)
         .then((data) => {
@@ -564,9 +570,14 @@ interface CatalogBatchResponse {
               nextDisplay.set(entry.displayName, entry.provider)
             }
           }
+          // A newly saved or renamed provider can arrive after the DOM pass
+          // that requested it. Re-run on map changes, even with a warm cache.
+          const changed = nextDisplay.size !== byDisplayName.size || nextProvider.size !== byProvider.size
+            || [...nextDisplay].some(([name, id]) => byDisplayName.get(name) !== id)
+            || [...nextProvider].some(([id]) => !byProvider.has(id))
           byDisplayName = nextDisplay
           byProvider = nextProvider
-          if (cold && nextProvider.size > 0) schedulePass()
+          if (changed) schedulePass()
         })
         .catch(() => { /* keep the last map; the next pass retries */ })
         .finally(() => { if (loadingProviders === attempt) loadingProviders = undefined })
@@ -595,6 +606,8 @@ interface CatalogBatchResponse {
 
       /** Resolve a card's shown title to the route id it belongs to. */
       const routeOf = (card: Element): string | undefined => {
+        const route = card.querySelector(EDITOR_ROUTE_SELECTOR)?.textContent?.trim()
+        if (route !== undefined && byProvider.has(route)) return route
         const name = cardName(card)
         if (name === undefined) return undefined
         // A provider whose title is its own id appears in both maps; prefer the
@@ -615,7 +628,7 @@ interface CatalogBatchResponse {
         for (const stale of Array.from(document.querySelectorAll('.' + MARK))) {
           if (!stale.isConnected) stale.remove()
         }
-        for (const card of Array.from(document.querySelectorAll(CARD_SELECTOR))) {
+        for (const card of CARD_SELECTORS.flatMap((selector) => Array.from(document.querySelectorAll(selector)))) {
           const provider = routeOf(card)
           // Without a route id the card is not one this plugin addresses, which
           // also keeps the controls off routes that only exist in the

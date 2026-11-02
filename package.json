@@ -1,7 +1,7 @@
 {
   "name": "dsh-model-meta-autofill",
-  "version": "0.3.0",
-  "description": "DSH plugin: auto-fill metadata (context length, output cap, display name, input modalities) for custom-provider models from the Model Metadata Registry (models.dev).",
+  "version": "0.4.0",
+  "description": "Fork of dsh-model-meta-autofill for DeepSeek Harness 0.2.1-rc.5: fills missing model metadata during discovery and adds manual autofill controls using models.dev.",
   "keywords": [
     "dsh-plugin",
     "llm",
@@ -42,19 +42,21 @@
     "typecheck": "tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.client.json && node scripts/copy-data.mjs",
     "test": "tsx --test tests/dataset.spec.ts tests/enrich.spec.ts tests/discovery.spec.ts tests/discovery-runtime.spec.ts tests/api.spec.ts tests/client-bundle.spec.ts tests/client-injection.spec.ts tests/integration/settings-autofill.spec.ts",
-    "gen:data": "node --import tsx scripts/generate-snapshot.mjs"
+    "gen:data": "node --import tsx scripts/generate-snapshot.mjs",
+    "prepare": "npm run build"
   },
   "license": "MIT",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.1-rc.5 <0.3.0"
   },
   "dependencies": {
-    "@deepseek-ai/schemastery": ">=3.18.4"
+    "@deepseek-ai/schemastery": "~3.18.5"
   },
   "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.0",
-    "@deepseek-ai/dsh-settings": ">=0.1.7-alpha.1",
-    "@deepseek-ai/dsh-util-values": ">=0.1.7-alpha.1"
+    "@deepseek-ai/cordis": "^4.0.5",
+    "@deepseek-ai/dsh-settings": ">=0.2.1-rc.5",
+    "@deepseek-ai/dsh-util-values": ">=0.2.1-rc.5"
   },
   "peerDependenciesMeta": {
     "@deepseek-ai/cordis": {
@@ -68,26 +70,28 @@
     }
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "4.0.5-alpha.1",
-    "@deepseek-ai/cordis-plugin-timer": "^1.1.6",
-    "@deepseek-ai/dsh-app-boot": "0.2.1-alpha.2",
-    "@deepseek-ai/dsh-config-editor": "0.2.1-alpha.2",
-    "@deepseek-ai/dsh-hmr": "0.2.1-alpha.2",
-    "@deepseek-ai/dsh-host-webserver": "0.2.1-alpha.2",
-    "@deepseek-ai/dsh-llm": "0.2.1-alpha.2",
-    "@deepseek-ai/dsh-settings": "0.2.1-alpha.2",
-    "@deepseek-ai/dsh-util-values": "0.2.1-alpha.2",
-    "@deepseek-ai/schemastery": "3.18.5-alpha.1",
+    "@deepseek-ai/cordis": "4.0.5",
+    "@deepseek-ai/cordis-plugin-group": "1.0.5",
+    "@deepseek-ai/cordis-plugin-include": "1.0.10",
+    "@deepseek-ai/cordis-plugin-loader": "1.0.6",
+    "@deepseek-ai/cordis-plugin-timer": "1.1.7",
+    "@deepseek-ai/dsh-app-boot": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-config-editor": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-hmr": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-host-webserver": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-llm": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-settings": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-util-values": "0.2.1-rc.5",
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QJAG1024/dsh-model-meta-autofill.git"
+    "url": "git+https://github.com/originalFactor/dsh-model-meta-autofill.git"
   },
-  "homepage": "https://github.com/QJAG1024/dsh-model-meta-autofill#readme",
+  "homepage": "https://github.com/originalFactor/dsh-model-meta-autofill#readme",
   "bugs": {
-    "url": "https://github.com/QJAG1024/dsh-model-meta-autofill/issues"
+    "url": "https://github.com/originalFactor/dsh-model-meta-autofill/issues"
   }
 }

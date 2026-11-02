@@ -284,6 +284,7 @@ function makeRow(model: Row, expanded: boolean): StubElement {
   row.appendChild(nameInput)
   // The expand control the reload clicks to reveal the capacity fields.
   const toggle = h('button', '_hash_iconButton')
+  toggle.setAttribute('aria-expanded', String(expanded))
   toggle.textContent = '模型选项'
   row.appendChild(toggle)
   entry.appendChild(row)
@@ -327,14 +328,24 @@ function makeInputTypes(input?: ('text' | 'image')[]): StubElement {
     const wrapper = h('label', '_hash_checkbox')
     const box = h('input', '_hash_checkboxInput')
     box.setAttribute('type', 'checkbox')
-    box.checked = input?.includes(modality) === true
-    box.addEventListener('click', () => { box.checked = !box.checked })
+    box.checked = (input ?? ['text']).includes(modality)
+    box.addEventListener('click', () => {
+      if (box.disabled) return
+      box.checked = !box.checked
+      updateDisabled()
+    })
     wrapper.appendChild(box)
     const text = h('span', '')
     text.textContent = label
     wrapper.appendChild(text)
     choices.appendChild(wrapper)
   }
+  const updateDisabled = (): void => {
+    const boxes = choices.querySelectorAll('input[type="checkbox"]')
+    const selected = boxes.filter((box) => box.checked).length
+    for (const box of boxes) box.disabled = selected === 1 && box.checked
+  }
+  updateDisabled()
   fieldset.appendChild(choices)
   return fieldset
 }
@@ -718,6 +729,59 @@ describe('client bundle: DOM injection onto provider cards', () => {
     assert.equal(card.element.querySelectorAll('.dmaSync').length, 0, 'teardown removes every control')
   })
 
+  it('mounts in the setup-card editor used before a provider has credentials', async () => {
+    const page = makePage()
+    const card = makeCard({ title: 'Gateway', rowsOf: () => ROWS, expanded: true, editorOpen: true })
+    card.element.className = '_hash_setupCard'
+    card.element.querySelector('[class*="rowHead"]')!.remove()
+    const header = h('div', '_hash_editorHeader')
+    const title = h('span', '_hash_editorTitle')
+    title.textContent = 'Gateway'
+    header.appendChild(title)
+    card.element.appendChild(header)
+    page.document.body.appendChild(card.element)
+    page.setProviders([{ provider: 'gateway', displayName: 'Gateway' }])
+    await page.flush()
+    assert.equal(buttonsIn(card.element).length, 3)
+    page.replies['/model-meta-autofill/api/catalog'] = {
+      ok: true, models: { 'deepseek-v4-flash': { id: 'deepseek-v4-flash', contextWindow: 128000 } }, unknown: [],
+    }
+    buttonsIn(card.element)[0]!.click()
+    await page.flush()
+    assert.equal(draftValue(card.element.querySelector('[class*="modelEntry"]')!, '上下文窗口'), '128K')
+    assert.equal(card.saves(), 0)
+    assert.equal(card.toggles(), 0)
+    page.teardown()
+  })
+
+  it('uses the editor route when the card title differs from the fetched title', async () => {
+    const page = makePage()
+    const card = makeCard({ title: 'Previous title', rowsOf: () => ROWS, expanded: true, editorOpen: true })
+    const route = h('span', '_hash_editorRoute')
+    route.textContent = 'gateway'
+    card.element.appendChild(route)
+    page.document.body.appendChild(card.element)
+    page.setProviders([{ provider: 'gateway', displayName: 'New title' }])
+    await page.flush()
+    assert.equal(buttonsIn(card.element).length, 3)
+    page.teardown()
+  })
+
+  it('mounts for a provider fetched after the initial provider map is warm', async () => {
+    const page = makePage()
+    page.setProviders([{ provider: 'old', displayName: 'Old' }])
+    const old = makeCard({ title: 'Old', rowsOf: () => ROWS, expanded: true, editorOpen: true })
+    page.document.body.appendChild(old.element)
+    await page.flush()
+    assert.equal(buttonsIn(old.element).length, 3)
+    page.setProviders([{ provider: 'old', displayName: 'Old' }, { provider: 'new', displayName: 'New' }])
+    const added = makeCard({ title: 'New', rowsOf: () => ROWS, expanded: true, editorOpen: true })
+    page.document.body.appendChild(added.element)
+    await page.flush()
+    assert.equal(buttonsIn(added.element).length, 3)
+    page.teardown()
+  })
+
   it('fills EVERY row of the card, and commits nothing by itself', async () => {
     // The provider control writes the catalog values into each row's own inputs
     // and leaves the card's 保存 to commit, so the open draft is never
@@ -1000,6 +1064,52 @@ describe('client bundle: DOM injection onto provider cards', () => {
     assert.deepEqual(checkboxState(card.element), { 文本: true, 图片: true })
     page.teardown()
   })
+
+  it('enables image before clearing the last selected text type', async () => {
+    const page = makePage()
+    const card = makeCard({ title: 'WorkBuddy', rowsOf: () => [{ id: 'vision', input: ['text'] }], expanded: true, editorOpen: true })
+    page.document.body.appendChild(card.element)
+    page.setProviders([{ provider: 'workbuddy', displayName: 'WorkBuddy' }])
+    await page.flush()
+    page.replies['/model-meta-autofill/api/catalog'] = {
+      ok: true, models: { vision: { id: 'vision', input: ['image'] } }, unknown: [],
+    }
+    card.element.querySelector('[class*="modelInputChoices"]')!.querySelector('.dma-syncButton')!.click()
+    await page.flush()
+    assert.deepEqual(checkboxState(card.element), { 文本: false, 图片: true })
+    assert.equal(card.saves(), 0)
+    page.teardown()
+  })
+
+  for (const labels of [
+    ['Model ID', 'Display name', 'Context window', 'Max output tokens', 'Text', 'Image'],
+  ]) {
+    it(`fills translated fields (${labels[0]})`, async () => {
+      const page = makePage()
+      const card = makeCard({ title: 'WorkBuddy', rowsOf: () => [{ id: 'vision', input: ['text'] }], expanded: true, editorOpen: true })
+      const entry = card.element.querySelector('[class*="modelEntry"]')!
+      const inputs = entry.querySelectorAll('input[aria-label]')
+      inputs.forEach((input, index) => { input.setAttribute('aria-label', labels[index]! + ' 1') })
+      entry.querySelectorAll('input[type="checkbox"]').forEach((box, index) => {
+        box.closest('label')!.querySelector('span')!.textContent = labels[index + 4]!
+      })
+      page.document.body.appendChild(card.element)
+      page.setProviders([{ provider: 'workbuddy', displayName: 'WorkBuddy' }])
+      await page.flush()
+      page.replies['/model-meta-autofill/api/catalog'] = {
+        ok: true, models: { vision: { id: 'vision', name: 'Vision', contextWindow: 128000, maxTokens: 4096, input: ['text', 'image'] } }, unknown: [],
+      }
+      buttonsIn(card.element)[0]!.click()
+      await page.flush()
+      assert.equal(draftValue(entry, labels[1]!), 'Vision')
+      assert.equal(draftValue(entry, labels[2]!), '128K')
+      assert.equal(draftValue(entry, labels[3]!), '4096')
+      assert.ok(entry.querySelectorAll('input[type="checkbox"]').every((box) => box.checked))
+      assert.equal(card.toggles(), 0)
+      assert.equal(card.saves(), 0)
+      page.teardown()
+    })
+  }
 
   it('resolves a row id at CLICK time, so an edited id is the one looked up', async () => {
     const page = makePage()

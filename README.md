@@ -1,10 +1,10 @@
 # dsh-model-meta-autofill
 
-[![npm version](https://img.shields.io/npm/v/dsh-model-meta-autofill.svg)](https://www.npmjs.com/package/dsh-model-meta-autofill)
+[![Version](https://img.shields.io/badge/version-0.4.0-blue.svg)](https://github.com/originalFactor/dsh-model-meta-autofill)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/node-22.19%2B%20%2F%2024%2B-brightgreen.svg)](https://nodejs.org/)
 
-为 DeepSeek Harness（DSH）的自定义供应商模型补全元数据：上下文窗口、最大输出 token 数、显示名称和输入模态。数据来自 [models.dev](https://models.dev/) Model Metadata Registry。
+这是 [QJAG1024/dsh-model-meta-autofill](https://github.com/QJAG1024/dsh-model-meta-autofill) 的独立 fork，由 [originalFactor](https://github.com/originalFactor/dsh-model-meta-autofill) 维护，当前版本为 `0.4.0`，适配 DeepSeek Harness（DSH）`0.2.1-rc.5`。它通过 [models.dev](https://models.dev/) 补全自定义供应商模型的上下文窗口、最大输出 token 数、显示名称和输入模态，支持发现时自动补全与编辑表单中的「自动获取」按钮。
 
 ## 目录
 
@@ -32,21 +32,27 @@
 
 ## 安装
 
-### 发布版
+### 从 GitHub 安装此 fork
 
-插件安装到运行 DSH Web 的 profile（例如 `web`）：
+使用 `github:originalFactor/dsh-model-meta-autofill` 将此 fork 安装到运行 DSH Web 的 profile（例如 `web`）：
 
 ```bash
-dsh plugin --profile web add dsh-model-meta-autofill
+dsh plugin --profile web add github:originalFactor/dsh-model-meta-autofill
 ```
 
-`cordis.patch.yml` 会自动插入默认配置。重启 DSH Web 或重新加载插件后生效。
+裸包名 `dsh-model-meta-autofill` 指向上游 npm 发布包；此 fork 使用上面的 GitHub 地址分发。包管理器通过 `prepare` 自动构建 `lib/`，安装环境需要 Node.js 22.19+（22.x）或 24+，并允许执行该构建脚本。`cordis.patch.yml` 会自动插入默认配置。安装后重启 DSH Web 并刷新浏览器。
+
+若 pnpm 提示阻止 Git 依赖的构建脚本，在对应 profile 的 `pnpm-workspace.yaml`（默认是 `~/.dsh/profiles/web/pnpm-workspace.yaml`）的 `allowBuilds` 下加入 pnpm 输出的精确依赖键，然后重新执行安装命令。此设置属于安装目标 profile，与本源码仓库中的同名文件不同。
+
+若「自动获取」按钮未出现，先检查 profile 的 `cordis.patch.yml`：`id: model-meta-autofill` 下若有 `disabled: true`，需改为 `false`。禁用条目不会加载浏览器端按钮，也不会注册 `/model-meta-autofill/api/providers`（此时返回 `404`）。启用后重启 Web profile 并刷新页面，在供应商的编辑卡片中展开「自定义设置」查看按钮。
 
 ### 源码版
 
-需要 Node.js 22+ 和 pnpm：
+需要 Node.js 22.19+（22.x）或 24+ 和 pnpm：
 
 ```bash
+git clone https://github.com/originalFactor/dsh-model-meta-autofill.git
+cd dsh-model-meta-autofill
 pnpm install
 pnpm build
 pnpm pack
@@ -62,7 +68,7 @@ dsh plugin --profile web add dsh-model-meta-autofill@<tarball-path>
 - 「模型目录」标题行的「自动获取」会批量填充卡片中的模型。
 - 展开模型行后，输入类型行末的「自动获取」只填充当前模型。
 
-按钮只改当前表单，不会关闭或重开卡片，也不会点击「保存」。目录未知的模型和目录缺少的字段保持原值；确认内容后按卡片自己的「保存」提交。
+按钮覆盖已保存供应商的普通编辑卡片与首次配置卡片；供应商列表异步更新后也会重新挂载。新建自定义供应商、尚未保存的表单不在此范围。按钮只改当前表单，不会关闭或重开卡片，也不会点击「保存」。目录未知的模型和目录缺少的字段保持原值；确认内容后按卡片自己的「保存」提交。
 
 ### HTTP API
 
@@ -122,12 +128,12 @@ pnpm build                    # 复制到 lib/data/ 并构建插件
 
 ## 开发
 
-开发依赖来自 npm 发布包，不需要检出 DeepSeek Harness 源码：
+当前适配 DeepSeek Harness `0.2.1-rc.5`（源码检出 `b830ec950f`），要求 Node.js 22.19+（22.x）或 24+。`engines.dsh` 声明支持 `>=0.2.1-rc.5 <0.3.0`；开发依赖与该版本的发布包及 Cordis 配套版本对齐，不需要构建 Harness 源码：
 
 ```bash
 pnpm typecheck
-pnpm test
 pnpm build
+pnpm test
 ```
 
 `pnpm test` 覆盖数据归一化、只填缺失字段、发现包装的可逆性、HTTP API、经典脚本客户端和真实设置集成。客户端相关测试需要先运行 `pnpm build`。
@@ -147,13 +153,13 @@ pnpm build
 
 ## 联系
 
-请通过 [GitHub Issues](https://github.com/QJAG1024/dsh-model-meta-autofill/issues) 报告问题或提出建议。
+请通过 [GitHub Issues](https://github.com/originalFactor/dsh-model-meta-autofill/issues) 报告问题或提出建议。
 
 ## 限制
 
 - 目标设置区固定为 `llm-pi-ai`；其它适配器不会被修改。
 - 发现补全依赖宿主提供兼容的 `discoverModels` 方法；宿主接口变化时可能退回为原始候选。
-- Web 按钮依赖 Models 页面现有的 CSS 模块锚点和中文 `aria-label`。宿主页面改版后可能需要同步调整客户端选择器。
+- Web 按钮依赖 Models 页面现有的 CSS 模块锚点和各语言的 `aria-label`。展开按钮通过 `aria-expanded` 定位，避免误点删除按钮；宿主页面改版或标签翻译变更后可能需要同步调整客户端选择器。
 - 手动按钮采用覆盖语义：目录有值的表单字段会被替换，但仍需用户手动保存。
 
 ## 许可证
@@ -162,6 +168,7 @@ pnpm build
 
 ## 致谢
 
+- [QJAG1024/dsh-model-meta-autofill](https://github.com/QJAG1024/dsh-model-meta-autofill) 提供本 fork 的上游实现；保留原项目的 MIT 许可证。
 - [models.dev](https://models.dev/) 提供模型元数据目录。
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 提供宿主插件运行环境。
 - README 结构参考 [Best README Template](https://github.com/othneildrew/Best-README-Template)。

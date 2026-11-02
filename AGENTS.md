@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-`dsh-model-meta-autofill` — DeepSeek Harness (DSH) host-side **cordis plugin** that auto-fills model metadata
+`dsh-model-meta-autofill` — originalFactor's fork of [QJAG1024/dsh-model-meta-autofill](https://github.com/QJAG1024/dsh-model-meta-autofill), targeting DeepSeek Harness `0.2.1-rc.5`. Install this fork with `dsh plugin --profile web add github:originalFactor/dsh-model-meta-autofill`. Keep upstream attribution and the MIT license.
+
+DeepSeek Harness (DSH) host-side **cordis plugin** that auto-fills model metadata
 (`contextWindow`, `maxTokens`, display name, input modalities) for **custom-provider** models in the `llm-pi-ai`
 settings section, using the [models.dev](https://models.dev/) Model Metadata Registry.
 
@@ -11,7 +13,7 @@ Two delivery paths, **both read-only with respect to settings** (the settings ca
 1. **Discovery-time enrichment (automatic)** — the plugin wraps the LLM service's `discoverModels`, filling only
    *missing* fields into each advertised candidate before the caller sees it.
 2. **Manual "自动获取" buttons (web client half)** — DOM-injected controls that fill the editor's form inputs;
-   nothing is persisted until the user presses 保存.
+   nothing is persisted until the user presses 保存 (Apply in English).
 
 Reference prose: `README.md` (Chinese, dense, cross-references the tests that pin each claim). Read it before
 changing behavior; it documents the design rationale and the degradation boundaries.
@@ -64,12 +66,14 @@ pnpm gen:data     # node --import tsx scripts/generate-snapshot.mjs [source …]
 npx tsx --test tests/dataset.spec.ts    # single spec (unit specs need no build)
 ```
 
-- Node **>= 22**, ESM only (`"type": "module"`). Local toolchain is **pnpm** (`pnpm-lock.yaml` v9);
+- Node **22.19+ (22.x) or >= 24**, ESM only (`"type": "module"`). Local toolchain is **pnpm** (`pnpm-lock.yaml` v9);
   `pnpm-workspace.yaml` only allows esbuild install scripts — it is *not* a workspace definition.
-- CI (`release.yml`, triggered by `v*` tags) uses `npm i --no-fund --no-audit` (no lockfile), runs typecheck →
-  4-file test subset → `npm run build` → 2 client suites → `npm publish` (OIDC trusted publishing).
-- CI omits `tests/discovery.spec.ts` and `tests/discovery-runtime.spec.ts` — only local `pnpm test` covers the
-  `discoverModels`-wrap contract.
+- CI (`release.yml`, on main pushes, pull requests, and `v*` tags) uses `npm i --ignore-scripts --no-fund --no-audit`,
+  runs typecheck → all 6 host test files → build → both client suites → pack, and uploads the tarball as an artifact.
+  This fork is distributed through GitHub; CI does not publish the upstream npm package name.
+- `prepare` runs `npm run build` for Git dependency installs. Keep it working from a checkout without `lib/`;
+  GitHub installations must include the emitted client, host declarations, and offline snapshot. If pnpm blocks
+  Git preparation, its exact dependency key belongs in the destination profile's `allowBuilds`, not this repo's file.
 - No linter/formatter is configured; match existing style by hand.
 
 ## Code Conventions & Common Patterns
@@ -99,8 +103,10 @@ npx tsx --test tests/dataset.spec.ts    # single spec (unit specs need no build)
 - **Form filling** must go through the native `HTMLInputElement.prototype` value setter + a dispatched `input` event;
   checkboxes are clicked (never assigned) and only when not already matching. Direct `input.value = …` is silently
   discarded by React's controlled-input tracker.
-- **DOM anchors** are fuzzy CSS-module matches (`[class*="rowCard"]`, `[class*="modelListHead"]`, …) and Chinese
-  `aria-label` prefixes — never hardcode hashed class names.
+- **DOM anchors** are fuzzy CSS-module matches (`rowCard`, `setupCard`, `modelListHead`, …) and English/Chinese
+  `aria-label` prefixes. Expand rows through `button[aria-expanded]`; never hardcode hashed class names.
+- If buttons are missing, check the live profile's `model-meta-autofill` entry for `disabled: true` before changing
+  selectors. A disabled entry has no browser roster row and its providers API returns 404.
 
 ## Important Files
 
@@ -120,7 +126,7 @@ npx tsx --test tests/dataset.spec.ts    # single spec (unit specs need no build)
 
 ## Runtime/Tooling Preferences
 
-- Runtime: **Node >= 22**, ESM. `tsx` executes TS tests and scripts directly; `tsc` is the only build tool.
+- Runtime: **Node 22.19+ (22.x) or >= 24**, ESM. `tsx` executes TS tests and scripts directly; `tsc` is the only build tool.
 - Package manager: **pnpm** locally (`pnpm-lock.yaml`, single importer); CI uses plain `npm i`.
 - All dev/runtime deps resolve from **npm published** `@deepseek-ai/*` packages — no harness source checkout needed.
   `@deepseek-ai/cordis`, `dsh-settings`, `dsh-util-values` are optional peers with minimum versions documented in the README.
@@ -149,7 +155,7 @@ npx tsx --test tests/dataset.spec.ts    # single spec (unit specs need no build)
   - result bubble lives detached on `body` (`position: fixed`), one at a time, removed on teardown.
 - `tests/integration/settings-autofill.spec.ts` boots a real profile (`dsh-app-boot` + real `ConfigEditor`,
   `SettingsForms`, `LlmRuntime`), seeding providers in the **user layer** (profile `cordis.patch.yml`) — the plugin only
-  ever writes user-layer routes. Do not replace it with fakes.
+  exposes user-layer routes and never writes settings. Do not replace it with fakes.
 - No coverage tooling. Behavior changes must keep `README.md` claims, `cordis.patch.yml` defaults, and `src/config.ts`
   defaults in agreement; regenerate data snapshots (`pnpm gen:data && pnpm build`) when `src/dataset.ts` normalization
   or catalog sources change.

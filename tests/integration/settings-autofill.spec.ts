@@ -10,7 +10,7 @@
  * adopting the answer.
  */
 
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { after, describe, it } from 'node:test'
@@ -18,7 +18,7 @@ import assert from 'node:assert/strict'
 import { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import Timer from '@deepseek-ai/cordis-plugin-timer'
-import { boot, initProfile, readProfilePatches, type ProfileContext } from '@deepseek-ai/dsh-app-boot'
+import { boot, evaluatePluginCompatibility, initProfile, readProfilePatches, type ProfileContext } from '@deepseek-ai/dsh-app-boot'
 import ConfigEditor from '@deepseek-ai/dsh-config-editor'
 import Hmr from '@deepseek-ai/dsh-hmr'
 import Settings from '@deepseek-ai/dsh-settings'
@@ -37,6 +37,7 @@ const modelFieldsShape = {
 const modelProfile = z.object({ id: z.string().required(), ...modelFieldsShape })
 const modelOverride = z.object(modelFieldsShape)
 const profile = z.object({
+  displayName: z.string(),
   apiKeyEnv: z.string(),
   api: z.string(),
   baseURL: z.string(),
@@ -416,6 +417,20 @@ describe('integration: the discovery seam over the live llm service', () => {
 })
 
 describe('integration: the catalog lookup behind the fill controls', () => {
+  it('reports saved provider identities for mounting the editor buttons', async () => {
+    const f = await fixture({ providers: {
+      gateway: { ...GATEWAY.gateway, displayName: 'My Gateway' },
+    } })
+    const result = await f.call('/model-meta-autofill/api/providers', undefined)
+    assert.equal(result.status, 200)
+    assert.deepEqual(result.payload['providers'], [{
+      provider: 'gateway', displayName: 'My Gateway',
+      models: [{ id: 'deepseek-v4-flash' }, { id: 'glm-4.7' }],
+    }])
+    assert.equal(f.events(), 0)
+    await f.dispose()
+  })
+
   it('answers with the fillable values and writes nothing', async () => {
     // The controls only READ: they put these into the editor's own fields and let
     // the card's 保存 commit. So after a lookup the user layer must be exactly as
@@ -481,3 +496,8 @@ function ctxBase(ctx: Context): Record<string, unknown> | undefined {
   const user = ctx.settings.describe({ redactSecrets: true }).find((row) => String(row.ns) === TARGET)?.user
   return (user as { providers?: Record<string, unknown> } | undefined)?.providers
 }
+
+it('accepts the plugin manifest in the current harness compatibility preflight', () => {
+  const manifest = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')) as object
+  assert.equal(evaluatePluginCompatibility(manifest), undefined)
+})
